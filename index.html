@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulačka uzemnění pro distribuční soustavu (ČEZ / PNE / ČSN)</title>
+    <style>
+        :root {
+            --primary: #ea640b; /* ČEZ like orange */
+            --primary-hover: #c45207;
+            --bg: #f4f7f6;
+            --text: #333;
+            --box-bg: #fff;
+            --border: #ddd;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--box-bg);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        h1, h2, h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .form-section {
+            background: #fdfdfd;
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            cursor: pointer;
+            background: #f0f0f0;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+
+        .radio-label:hover {
+            background: #e0e0e0;
+        }
+
+        .radio-label input {
+            margin-right: 10px;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .results {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 8px;
+            background: #fff;
+            border: 2px solid var(--border);
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+            font-size: 16px;
+        }
+
+        .result-row strong {
+            color: #2c3e50;
+        }
+
+        .value-highlight {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .alert {
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .alert-info { background: #e2f0fb; border-left: 5px solid #3498db; color: #1f618d; }
+        .alert-warning { background: #fff8e1; border-left: 5px solid var(--warning); color: #7f6000; }
+        .alert-danger { background: #fdecea; border-left: 5px solid var(--danger); color: #900; }
+
+        .design-box {
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .note {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Výpočet uzemnění a posouzení dle PNE/ČSN</h1>
+    <p>Aplikace pro návrh a posouzení zemničů distribuční soustavy na základě měření rezistivity půdy 4-vodičovou (Wennerovou) metodou.</p>
+
+    <form id="groundingForm">
+        <div class="form-section">
+            <h3>1. Naměřené hodnoty (4-vodičová metoda)</h3>
+            <div class="form-group">
+                <label for="resistance">Naměřený odpor na přístroji (R) [Ω]:</label>
+                <input type="number" id="resistance" step="0.01" min="0.01" required placeholder="Např. 12.5">
+            </div>
+            <div class="form-group">
+                <label for="distance">Vzdálenost elektrod (a) [m]:</label>
+                <input type="number" id="distance" step="0.1" min="0.1" required placeholder="Např. 2">
+                <div class="note">Vzdálenost mezi sousedními sondami při Wennerově uspořádání.</div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>2. Typ uzemňovaného zařízení</h3>
+            <div class="radio-group">
+                <label class="radio-label">
+                    <input type="radio" name="deviceType" value="DTS" required> 
+                    DTS (Distribuční trafostanice)
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="deviceType" value="UO"> 
+                    ÚO (Úsekový odpojovač / spínač vn)
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="deviceType" value="PB"> 
+                    PB / PS (Přípojková / Pojistková skříň nn)
+                </label>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>3. Lokalita (Kroková a dotyková napětí)</h3>
+            <div class="form-group">
+                <label for="locationType">Vyberte charakter okolí zařízení:</label>
+                <select id="locationType" required>
+                    <option value="normal">Běžný terén (volně přístupné, tráva, chodník)</option>
+                    <option value="agriculture">Zemědělská oblast (zvýšené riziko pro zvířata, ohrady)</option>
+                    <option value="highrisk">Vysoké riziko osob (dětská hřiště, koupaliště, kempy)</option>
+                    <option value="closed">Uzavřený elektrický provoz (nepřístupné veřejnosti)</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="button" onclick="calculateGrounding()">Provést výpočet a návrh</button>
+    </form>
+
+    <div class="results" id="resultsBlock">
+        <h2>Výsledky výpočtu</h2>
+        
+        <div class="result-row">
+            <span>Měrný odpor půdy (Rezistivita ρ):</span>
+            <span class="value-highlight" id="resRho">-</span>
+        </div>
+        <div class="result-row">
+            <span>Požadovaný zemní odpor dle PNE (R_max):</span>
+            <span class="value-highlight" id="resTargetR">-</span>
+        </div>
+
+        <div id="alertBox" class="alert"></div>
+
+        <div class="design-box">
+            <h3>Konstrukční návrh zemniče</h3>
+            <p>Aby byl splněn požadavek normy v této půdě, je nutné zřídit zemnič o minimálně těchto parametrech (vyberte jednu z variant):</p>
+            <div class="result-row">
+                <span>Varianta A: Pásek FeZn (uložen v 0.5 - 1 m)</span>
+                <strong id="resStripLength">-</strong>
+            </div>
+            <div class="result-row">
+                <span>Varianta B: Zemnící tyče (zatlučené, např. 2m)</span>
+                <strong id="resRodCount">-</strong>
+            </div>
+            <div class="note">* Výpočet délky pásku je zjednodušený vzorec L ≈ 2·ρ / R. Výpočet tyčí uvažuje tyče délky 2m. Skutečná hodnota se může mírně lišit v závislosti na hloubce uložení a homogenitě půdy.</div>
+        </div>
+
+        <div id="safetyMeasuresBox" class="alert alert-info">
+            </div>
+    </div>
+</div>
+
+<script>
+    function calculateGrounding() {
+        // Získání hodnot z formuláře
+        const R_measured = parseFloat(document.getElementById('resistance').value);
+        const a = parseFloat(document.getElementById('distance').value);
+        const deviceTypeNodes = document.getElementsByName('deviceType');
+        let deviceType = null;
+        for (let i = 0; i < deviceTypeNodes.length; i++) {
+            if (deviceTypeNodes[i].checked) {
+                deviceType = deviceTypeNodes[i].value;
+                break;
+            }
+        }
+        const locationType = document.getElementById('locationType').value;
+
+        // Validace vstupů
+        if (isNaN(R_measured) || isNaN(a) || !deviceType) {
+            alert("Prosím vyplňte všechny vstupní hodnoty a vyberte typ zařízení.");
+            return;
+        }
+
+        // 1. Výpočet rezistivity půdy (Wennerova metoda: ρ = 2 * π * a * R)
+        const rho = 2 * Math.PI * a * R_measured;
+        
+        // 2. Stanovení maximálního dovoleného odporu dle typu zařízení a norem
+        let targetR = 0;
+        let limitReason = "";
+
+        if (deviceType === "DTS") {
+            targetR = 2.0; 
+            limitReason = "Požadavek pro sdružené uzemnění vn/nn (obvykle max 2 Ω). Pro přesnější určení by se musel znát zemní poruchový proud sítě.";
+        } else if (deviceType === "UO") {
+            if (rho > 500) {
+                targetR = 15.0;
+                limitReason = "PNE 33 0000-1 umožňuje u úsekových odpojovačů při rezistivitě půdy nad 500 Ω·m hodnotu až 15 Ω.";
+            } else {
+                targetR = 10.0;
+                limitReason = "Standardní požadavek PNE 33 0000-1 pro uzemnění úsekových odpojovačů je max 10 Ω.";
+            }
+        } else if (deviceType === "PB") {
+            targetR = 15.0;
+            limitReason = "Dle ČSN 33 2000-5-54 a standardů distribuce je max odpor přizemnění PEN na konci vedení/odbočce obvykle 15 Ω (v uzlu zdroje max 5 Ω).";
+        }
+
+        // 3. Opatření pro kroková a dotyková napětí
+        let safetyMeasures = "<strong>Požadavky na kroková a dotyková napětí:</strong><br>";
+        
+        if (locationType === "highrisk") {
+            safetyMeasures += "⚠️ <strong>Lokalita s vysokým rizikem (děti, koupaliště):</strong><br>";
+            safetyMeasures += "- Je bezpodmínečně nutné instalovat kruhový strojený zemnič (kolem stožáru/DTS v hloubce 0.5m a vzdálenosti cca 1m) pro řízení potenciálu.<br>";
+            safetyMeasures += "- Ovládací páky (u ÚO) musí mít vložený izolátor nebo izolované stanoviště (kovová rohož spojená s konstrukcí).<br>";
+            safetyMeasures += "- Doporučuje se úprava povrchu (např. 10 cm vrstva štěrku nebo asfaltu) do vzdálenosti 1m od zařízení k izolaci krokového napětí.";
+        } else if (locationType === "agriculture") {
+            safetyMeasures += "⚠️ <strong>Zemědělská oblast:</strong><br>";
+            safetyMeasures += "- Zvýšené riziko pro hospodářská zvířata (bezpečná mez dotykového napětí je zde snížena, obvykle na 25V střídavých).<br>";
+            safetyMeasures += "- Je nutné dbát na to, aby v blízkosti nebyly kovové ohrady, případně je nutné je od elektrického zařízení galvanicky oddělit.<br>";
+            safetyMeasures += "- Doporučena je instalace ochranného kruhového zemniče pro vyrovnání potenciálu.";
+        } else if (locationType === "closed") {
+            safetyMeasures += "ℹ️ <strong>Uzavřený provoz:</strong><br>";
+            safetyMeasures += "- Zařízení není přístupné laické veřejnosti. Konstrukce uzemnění se řídí standardním výpočtem odporu.<br>";
+            safetyMeasures += "- Zaměřte se na bezpečné ekvipotenciální pospojování všech vodivých neživých částí v objektu.";
+        } else {
+            safetyMeasures += "ℹ️ <strong>Běžný terén:</strong><br>";
+            if (deviceType === "UO") {
+                safetyMeasures += "- U ovládacího pohonu nezapomeňte na zemnící kovovou rohož pro obsluhu nebo bezpečně izolované táhlo, aby nedošlo k úrazu dotykovým napětím při spínání.";
+            } else if (deviceType === "DTS") {
+                safetyMeasures += "- Standardní ochrana uložením zemniče a obvodovým páskem. Dodržte minimální hloubky uložení (cca 0.5 - 0.7 m).";
+            } else {
+                safetyMeasures += "- Postačí standardní uložení pásku nebo tyče do předepsané hloubky.";
+            }
+        }
+
+        // 4. Návrh délky zemniče (orientační fyzikální vzorce)
+        // Pásek: L = 2 * rho / R
+        const stripLength = (2 * rho) / targetR;
+        
+        // Tyče (Uvažujeme standardní tyče délky L_rod = 2m)
+        // Vzorec pro tyč: R_tyc = (rho / L_rod) => Jedna tyč má odpor cca rho/2
+        // Pro dosažení targetR potřebujeme paralelně zapojit N tyčí. (Efektivita klesá, použijeme koeficient cca 1.2)
+        const resistanceOneRod = rho / 2;
+        let rodsNeeded = Math.ceil((resistanceOneRod / targetR) * 1.2); 
+        if (rodsNeeded < 1) rodsNeeded = 1;
+
+        // 5. Vykreslení výsledků do HTML
+        document.getElementById('resRho').innerHTML = rho.toFixed(1) + " Ω·m";
+        document.getElementById('resTargetR').innerHTML = "max. " + targetR.toFixed(1) + " Ω";
+        
+        const alertBox = document.getElementById('alertBox');
+        alertBox.innerHTML = limitReason;
+        alertBox.className = "alert alert-warning"; // Default info
+
+        document.getElementById('resStripLength').innerHTML = stripLength.toFixed(1) + " metrů";
+        document.getElementById('resRodCount').innerHTML = rodsNeeded + " ks (á 2m)";
+        
+        document.getElementById('safetyMeasuresBox').innerHTML = safetyMeasures;
+
+        // Zobrazení celého bloku
+        document.getElementById('resultsBlock').style.display = "block";
+        
+        // Plynulý scroll na výsledky
+        document.getElementById('resultsBlock').scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
