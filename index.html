@@ -752,7 +752,9 @@ function copyShareLink() {
 
   // Vytvoření obsahu pro "Internet Shortcut" soubor (.url)
   const urlFileContent = `[InternetShortcut]\nURL=${url}\n`;
-  const blob = new Blob([urlFileContent], { type: 'text/plain' });
+  
+  // OPRAVA: Změna MIME typu na 'application/octet-stream', aby mobilní prohlížeče nepřidávaly .txt
+  const blob = new Blob([urlFileContent], { type: 'application/octet-stream' });
   
   // Vyvolání okna pro stažení/uložení do počítače
   const a = document.createElement('a');
