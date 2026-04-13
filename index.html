@@ -27,323 +27,445 @@
     --warn-bg: #fdf6e3;
   }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-font-family: var(--sans);
-background: var(--bg);
-color: var(--text);
-min-height: 100vh;
-padding: 0;
-}
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
 
-/* HEADER */
-.site-header {
-background: var(--accent);
-color: #fff;
-padding: 18px 40px;
-display: flex;
-align-items: center;
-gap: 24px;
-border-bottom: 4px solid #c0a060;
-}
-.site-header .logo-mark {
-font-family: var(--mono);
-font-size: 11px;
-font-weight: 600;
-letter-spacing: 2px;
-text-transform: uppercase;
-opacity: 0.7;
-line-height: 1.5;
-}
-.site-header h1 {
-font-size: 18px;
-font-weight: 700;
-letter-spacing: 0.5px;
-}
-.site-header .norm-badge {
-margin-left: auto;
-font-family: var(--mono);
-font-size: 12px;
-background: rgba(255,255,255,0.15);
-border: 1px solid rgba(255,255,255,0.3);
-padding: 4px 12px;
-border-radius: 20px;
-}
+  /* HEADER */
+  .site-header {
+    background: var(--accent);
+    color: #fff;
+    padding: 18px 40px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    border-bottom: 4px solid #c0a060;
+  }
+  .header-logos {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  .header-logos img {
+    height: 40px;
+    background: #fff;
+    padding: 4px;
+    border-radius: 4px;
+    object-fit: contain;
+  }
+  .site-header .logo-mark {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    line-height: 1.5;
+  }
+  .site-header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .site-header .norm-badge {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 12px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
 
-/* LAYOUT */
-.app-body {
-max-width: 1100px;
-margin: 0 auto;
-padding: 32px 24px 80px;
-}
+  /* LAYOUT */
+  .app-body {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
 
-/* SECTION */
-.card {
-background: var(--surface);
-border: 1px solid var(--border);
-border-radius: var(--radius);
-margin-bottom: 24px;
-overflow: hidden;
-}
-.card-header {
-background: var(--accent);
-color: #fff;
-padding: 10px 20px;
-font-family: var(--mono);
-font-size: 11px;
-font-weight: 600;
-letter-spacing: 2px;
-text-transform: uppercase;
-display: flex;
-align-items: center;
-gap: 10px;
-}
-.card-header .section-num {
-background: rgba(255,255,255,0.2);
-width: 22px; height: 22px;
-border-radius: 50%;
-display: flex; align-items: center; justify-content: center;
-font-size: 10px;
-}
-.card-body { padding: 20px 24px; }
+  /* SECTION */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .card-header {
+    background: var(--accent);
+    color: #fff;
+    padding: 10px 20px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-header .section-num {
+    background: rgba(255,255,255,0.2);
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+  }
+  .card-body { padding: 20px 24px; }
 
-/* GRID */
-.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
-.grid4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
-@media(max-width:700px){.grid2,.grid3,.grid4{grid-template-columns:1fr;}}
+  /* GRID */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
+  @media(max-width:700px){.grid2,.grid3,.grid4{grid-template-columns:1fr;}}
 
-/* FORM ELEMENTS */
-.field { display: flex; flex-direction: column; gap: 5px; }
-label {
-font-size: 11px;
-font-weight: 600;
-letter-spacing: 0.8px;
-text-transform: uppercase;
-color: var(--text-soft);
-font-family: var(--mono);
-}
-input[type=text], input[type=number], input[type=date], select, textarea {
-border: 1px solid var(--border);
-border-radius: var(--radius);
-padding: 9px 12px;
-font-family: var(--sans);
-font-size: 14px;
-background: #fff;
-color: var(--text);
-transition: border 0.15s;
-width: 100%;
-}
-input:focus, select:focus, textarea:focus {
-outline: none;
-border-color: var(--accent);
-box-shadow: 0 0 0 3px rgba(30,58,95,0.1);
-}
-textarea { resize: vertical; min-height: 60px; }
-.unit {
-font-family: var(--mono);
-font-size: 12px;
-color: var(--text-soft);
-margin-top: 2px;
-}
+  /* FORM ELEMENTS */
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    font-family: var(--mono);
+  }
+  input[type=text], input[type=number], input[type=date], select, textarea {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 9px 12px;
+    font-family: var(--sans);
+    font-size: 14px;
+    background: #fff;
+    color: var(--text);
+    transition: border 0.15s;
+    width: 100%;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(30,58,95,0.1);
+  }
+  textarea { resize: vertical; min-height: 60px; }
+  .unit {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-soft);
+    margin-top: 2px;
+  }
 
-/* RESIS TABLE */
-.resis-table { width: 100%; border-collapse: collapse; }
-.resis-table th {
-background: #e8e4de;
-font-family: var(--mono);
-font-size: 11px;
-letter-spacing: 1px;
-text-transform: uppercase;
-padding: 8px 12px;
-text-align: left;
-border: 1px solid var(--border);
-}
-.resis-table td {
-border: 1px solid var(--border);
-padding: 6px 12px;
-}
-.resis-table input { border: none; background: transparent; font-size: 14px; width: 100%; }
-.resis-table input:focus { outline: 2px solid var(--accent); border-radius: 2px; }
+  /* RESIS TABLE */
+  .resis-table { width: 100%; border-collapse: collapse; }
+  .resis-table th {
+    background: #e8e4de;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+  .resis-table td {
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+  }
+  .resis-table input { border: none; background: transparent; font-size: 14px; width: 100%; }
+  .resis-table input:focus { outline: 2px solid var(--accent); border-radius: 2px; }
 
-/* COMPUTED VALUES */
-.computed-box {
-background: #e8e4de;
-border: 1px solid var(--border-strong);
-border-radius: var(--radius);
-padding: 14px 18px;
-font-family: var(--mono);
-}
-.computed-box .cv-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-soft); }
-.computed-box .cv-value { font-size: 22px; font-weight: 600; color: var(--accent); margin-top: 4px; }
-.computed-box .cv-unit { font-size: 12px; color: var(--text-soft); }
-.computed-box .cv-model { font-size: 11px; margin-top: 4px; }
+  /* COMPUTED VALUES */
+  .computed-box {
+    background: #e8e4de;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    font-family: var(--mono);
+  }
+  .computed-box .cv-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-soft); }
+  .computed-box .cv-value { font-size: 22px; font-weight: 600; color: var(--accent); margin-top: 4px; }
+  .computed-box .cv-unit { font-size: 12px; color: var(--text-soft); }
+  .computed-box .cv-model { font-size: 11px; margin-top: 4px; }
 
-/* RECT CONVERTER */
-.converter-box {
-background: #f5f0e8;
-border: 1px dashed var(--border-strong);
-border-radius: var(--radius);
-padding: 16px 20px;
-margin-top: 12px;
-}
-.converter-box h4 {
-font-family: var(--mono);
-font-size: 11px;
-letter-spacing: 1.5px;
-text-transform: uppercase;
-color: var(--text-soft);
-margin-bottom: 10px;
-}
-.converter-result {
-font-family: var(--mono);
-font-size: 13px;
-margin-top: 10px;
-padding: 8px 12px;
-background: #fff;
-border: 1px solid var(--border);
-border-radius: var(--radius);
-}
+  /* RECT CONVERTER */
+  .converter-box {
+    background: #f5f0e8;
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-top: 12px;
+  }
+  .converter-box h4 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    margin-bottom: 10px;
+  }
+  .converter-result {
+    font-family: var(--mono);
+    font-size: 13px;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
 
-/* TOGGLE GROUP */
-.toggle-group { display: flex; gap: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; width: fit-content; }
-.toggle-group input[type=radio] { display: none; }
-.toggle-group label {
-padding: 8px 16px;
-font-size: 13px;
-font-family: var(--sans);
-text-transform: none;
-letter-spacing: 0;
-font-weight: 500;
-cursor: pointer;
-border-right: 1px solid var(--border);
-background: #fff;
-color: var(--text);
-transition: background 0.15s, color 0.15s;
-}
-.toggle-group label:last-of-type { border-right: none; }
-.toggle-group input[type=radio]:checked + label {
-background: var(--accent);
-color: #fff;
-}
+  /* TOGGLE GROUP */
+  .toggle-group { display: flex; gap: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; width: fit-content; }
+  .toggle-group input[type=radio] { display: none; }
+  .toggle-group label {
+    padding: 8px 16px;
+    font-size: 13px;
+    font-family: var(--sans);
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 500;
+    cursor: pointer;
+    border-right: 1px solid var(--border);
+    background: #fff;
+    color: var(--text);
+    transition: background 0.15s, color 0.15s;
+  }
+  .toggle-group label:last-of-type { border-right: none; }
+  .toggle-group input[type=radio]:checked + label {
+    background: var(--accent);
+    color: #fff;
+  }
 
-/* CHECKBOX ROW */
-.check-row { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
-.check-row input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--accent); }
-.check-row label { text-transform: none; letter-spacing: 0; font-size: 13px; font-family: var(--sans); color: var(--text); cursor: pointer; }
+  /* CHECKBOX ROW */
+  .check-row { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+  .check-row input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--accent); }
+  .check-row label { text-transform: none; letter-spacing: 0; font-size: 13px; font-family: var(--sans); color: var(--text); cursor: pointer; }
 
-/* SECTION DIVIDER */
-.divider { height: 1px; background: var(--border); margin: 16px 0; }
+  /* SECTION DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: 16px 0; }
 
-/* RESULT PANEL */
-.result-panel {
-border-radius: var(--radius);
-padding: 28px 32px;
-border: 2px solid;
-margin-top: 8px;
-}
-.result-panel.ok { background: var(--ok-bg); border-color: var(--ok); }
-.result-panel.fail { background: var(--fail-bg); border-color: var(--fail); }
-.result-panel.pending { background: #f0ede8; border-color: var(--border); }
-.result-panel .verdict {
-font-size: 28px;
-font-weight: 700;
-font-family: var(--mono);
-letter-spacing: 2px;
-}
-.result-panel.ok .verdict { color: var(--ok); }
-.result-panel.fail .verdict { color: var(--fail); }
-.result-panel.pending .verdict { color: var(--text-soft); }
-.result-panel .result-row {
-display: flex;
-gap: 40px;
-margin-top: 16px;
-flex-wrap: wrap;
-}
-.result-panel .rr-item {}
-.result-panel .rr-label { font-family: var(--mono); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-soft); }
-.result-panel .rr-val { font-family: var(--mono); font-size: 24px; font-weight: 600; }
-.result-panel.ok .rr-val.calc { color: var(--ok); }
-.result-panel.fail .rr-val.calc { color: var(--fail); }
+  /* RESULT PANEL */
+  .result-panel {
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    border: 2px solid;
+    margin-top: 8px;
+  }
+  .result-panel.ok { background: var(--ok-bg); border-color: var(--ok); }
+  .result-panel.fail { background: var(--fail-bg); border-color: var(--fail); }
+  .result-panel.pending { background: #f0ede8; border-color: var(--border); }
+  .result-panel .verdict {
+    font-size: 28px;
+    font-weight: 700;
+    font-family: var(--mono);
+    letter-spacing: 2px;
+  }
+  .result-panel.ok .verdict { color: var(--ok); }
+  .result-panel.fail .verdict { color: var(--fail); }
+  .result-panel.pending .verdict { color: var(--text-soft); }
+  .result-panel .result-row {
+    display: flex;
+    gap: 40px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .result-panel .rr-label { font-family: var(--mono); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-soft); }
+  .result-panel .rr-val { font-family: var(--mono); font-size: 24px; font-weight: 600; }
+  .result-panel.ok .rr-val.calc { color: var(--ok); }
+  .result-panel.fail .rr-val.calc { color: var(--fail); }
 
-/* BTN */
-.btn-calc {
-background: var(--accent);
-color: #fff;
-border: none;
-padding: 14px 36px;
-font-family: var(--mono);
-font-size: 13px;
-letter-spacing: 2px;
-text-transform: uppercase;
-cursor: pointer;
-border-radius: var(--radius);
-transition: background 0.15s;
-}
-.btn-calc:hover { background: #152c47; }
-.btn-print {
-background: #fff;
-color: var(--accent);
-border: 1px solid var(--accent);
-padding: 14px 28px;
-font-family: var(--mono);
-font-size: 12px;
-letter-spacing: 1.5px;
-text-transform: uppercase;
-cursor: pointer;
-border-radius: var(--radius);
-}
-.btn-print:hover { background: #e8eef5; }
-.btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+  /* BTN */
+  .btn-calc {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 14px 36px;
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: var(--radius);
+    transition: background 0.15s;
+  }
+  .btn-calc:hover { background: #152c47; }
+  .btn-print {
+    background: #fff;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 14px 28px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: var(--radius);
+  }
+  .btn-print:hover { background: #e8eef5; }
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
 
-/* FORMULA NOTE */
-.formula-note {
-background: #f0ede8;
-border-left: 3px solid var(--accent);
-padding: 10px 14px;
-font-family: var(--mono);
-font-size: 12px;
-color: var(--text-soft);
-margin-top: 10px;
-line-height: 1.7;
-}
+  /* FORMULA NOTE */
+  .formula-note {
+    background: #f0ede8;
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-soft);
+    margin-top: 10px;
+    line-height: 1.7;
+  }
 
-/* INFO TAG */
-.info-tag {
-display: inline-block;
-background: var(--accent);
-color: #fff;
-font-family: var(--mono);
-font-size: 10px;
-letter-spacing: 1px;
-padding: 2px 8px;
-border-radius: 10px;
-margin-left: 6px;
-vertical-align: middle;
-}
+  /* INFO TAG */
+  .info-tag {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
 
-/* REQUIRED RESISTANCE TABLE */
-.req-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.req-table th { background: var(--accent); color: #fff; padding: 8px 12px; font-family: var(--mono); font-size: 11px; letter-spacing: 1px; text-align: left; }
-.req-table td { border: 1px solid var(--border); padding: 7px 12px; }
-.req-table tr:nth-child(even) td { background: #f5f2ee; }
-.req-table .highlight td { background: #dce8f5 !important; font-weight: 600; }
+  /* REQUIRED RESISTANCE TABLE */
+  .req-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .req-table th { background: var(--accent); color: #fff; padding: 8px 12px; font-family: var(--mono); font-size: 11px; letter-spacing: 1px; text-align: left; }
+  .req-table td { border: 1px solid var(--border); padding: 7px 12px; }
+  .req-table tr:nth-child(even) td { background: #f5f2ee; }
+  .req-table .highlight td { background: #dce8f5 !important; font-weight: 600; }
 
-@media print {
-.site-header { background: #000 !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-.no-print { display: none !important; }
-body { background: #fff; }
-.card { break-inside: avoid; }
-}
+  .print-only { display: none; }
+
+  /* ====== OFICIÁLNÍ TISKOVÝ STYL (PDF PROTOKOL) ====== */
+  @media print {
+    @page { size: A4 portrait; margin: 1.5cm; }
+    
+    body { background: #fff; color: #000; font-size: 12px; }
+    .no-print, .formula-note, .converter-box, .info-tag, .btn-row { display: none !important; }
+    .print-only { display: flex !important; }
+    .app-body { padding: 0; max-width: 100%; margin: 0; }
+    
+    /* Hlavička čistá pro tisk */
+    .site-header { 
+      background: transparent !important; 
+      color: #000 !important; 
+      padding: 0 0 15px 0; 
+      border-bottom: 2px solid #000; 
+      align-items: flex-end; 
+    }
+    .site-header .logo-mark { color: #000; font-weight: bold; }
+    .site-header h1 { color: #000; font-size: 18px; margin-bottom: 5px; }
+    .site-header .norm-badge { border: 1px solid #000; color: #000; background: transparent; }
+    .header-logos img { padding: 0; }
+
+    /* Karty na čistý text s rámečkem */
+    .card { 
+      border: none !important; 
+      border-bottom: 1px solid #ccc !important; 
+      border-radius: 0; 
+      margin-bottom: 20px; 
+      page-break-inside: avoid;
+    }
+    .card-header { 
+      background: transparent !important; 
+      color: #000 !important; 
+      border-bottom: 1px solid #000; 
+      padding: 5px 0; 
+      margin-bottom: 15px; 
+    }
+    .card-header .section-num { 
+      background: #000; 
+      color: #fff; 
+    }
+    .card-body { padding: 0; }
+
+    /* Vstupní pole vypadají jako vypsaný text */
+    input[type=text], input[type=number], input[type=date], select, textarea {
+      border: none !important;
+      background: transparent !important;
+      padding: 0 !important;
+      font-weight: bold;
+      color: #000 !important;
+      font-size: 13px;
+      appearance: none;
+      -webkit-appearance: none;
+      resize: none;
+      box-shadow: none !important;
+    }
+    /* Podtržení políček pro jasnější čtení */
+    .field { border-bottom: 1px dotted #999; padding-bottom: 4px; }
+    textarea { min-height: auto; height: auto; border-bottom: none !important; }
+
+    /* Rádio tlačítka zobrazení vybrané hodnoty */
+    .toggle-group { border: none !important; width: 100%; display: block; }
+    .toggle-group label { display: none !important; }
+    .toggle-group input[type=radio]:checked + label { 
+      display: inline-block !important; 
+      border: none !important; 
+      background: transparent !important; 
+      color: #000 !important; 
+      font-weight: bold; 
+      padding: 0; 
+      font-size: 14px;
+    }
+
+    /* Checkboxy */
+    .check-row label { font-weight: bold; }
+
+    /* Computed Boxy v sekci výsledků */
+    .computed-box { 
+      background: transparent !important; 
+      border: 1px solid #000 !important; 
+      color: #000 !important;
+    }
+    .computed-box .cv-value { color: #000 !important; }
+
+    /* Výsledný panel */
+    .result-panel { 
+      background: transparent !important; 
+      border: 2px solid #000 !important; 
+      padding: 15px 20px;
+    }
+    .result-panel.ok .verdict, .result-panel.fail .verdict { color: #000 !important; }
+    .result-panel.ok .rr-val.calc, .result-panel.fail .rr-val.calc { color: #000 !important; }
+    
+    /* Podpisový blok */
+    .signature-block { 
+      display: flex; 
+      justify-content: space-between; 
+      margin-top: 60px; 
+      page-break-inside: avoid;
+    }
+    .signature-box { 
+      width: 40%; 
+      text-align: center; 
+      border-top: 1px solid #000; 
+      padding-top: 10px; 
+      font-family: var(--sans); 
+      font-size: 12px; 
+      color: #000;
+    }
+  }
 </style>
 
 </head>
 <body>
 
 <div class="site-header">
-  <div class="logo-mark">ČEZ Distribuce<br>EG.D / PREdistribuce</div>
-  <h1>Protokol o měření uzemnění — Výpočet zemního odporu</h1>
+  <div class="header-logos">
+    <img src="SUAS GRID LOGO.svg" alt="SUAS Grid" onerror="this.style.display='none'">
+    <div class="logo-mark">ČEZ Distribuce<br>EG.D / PREdistribuce</div>
+  </div>
+  <div style="flex-grow: 1;">
+    <h1>Protokol o měření uzemnění</h1>
+  </div>
   <div class="norm-badge">PNE 33 0000-4 ed.6</div>
 </div>
 
@@ -357,8 +479,8 @@ body { background: #fff; }
         <div class="field"><label>IV stavby / číslo zakázky</label><input type="text" id="iv" placeholder="IVS-2025-0001"></div>
         <div class="field"><label>Datum měření</label><input type="date" id="datum"></div>
         <div class="field"><label>Místo měření</label><input type="text" id="misto" placeholder="GPS / adresa / km vedení"></div>
-        <div class="field"><label>Měřící zařízení</label><input type="text" id="zarizeni" value="UT 572" readonly style="background:#f0ede8;color:#5a5248;"></div>
-        <div class="field"><label>Podmínky měření</label><textarea id="podminky" placeholder="Počasí, vlhkost půdy, teplota vzduchu, poznámky…"></textarea></div>
+        <div class="field"><label>Měřící zařízení</label><input type="text" id="zarizeni" value="UT 572"></div>
+        <div class="field" style="grid-column: 1 / -1; border-bottom: none;"><label>Podmínky měření</label><textarea id="podminky" placeholder="Počasí, vlhkost půdy, teplota vzduchu, poznámky…"></textarea></div>
       </div>
     </div>
   </div>
@@ -371,7 +493,7 @@ body { background: #fff; }
         Dle PNE 33 0000-4 ed.6 se pro tento rozestup uvažuje model homogenní půdy.
       </div>
 
-      <div class="grid2">
+      <div class="grid2 no-print">
         <div class="field">
           <label>Naměřená rezistivita ρ (1 m)</label>
           <div style="display:flex; gap:10px; align-items:center;">
@@ -380,7 +502,7 @@ body { background: #fff; }
           </div>
         </div>
         <div style="display:flex; align-items:flex-end;">
-           <button class="btn-calc no-print" onclick="setResistivity()">Potvrdit hodnotu</button>
+           <button class="btn-calc" onclick="setResistivity()">Potvrdit hodnotu</button>
         </div>
       </div>
 
@@ -416,8 +538,8 @@ body { background: #fff; }
             <option value="PB_NN_KS">PB NN konec sítě — Podpěrný bod NN (konec sítě)</option>
           </select>
         </div>
-        <div class="field">
-          <label>Maximální dovolené dotykové napětí U<sub>Tp</sub></label>
+        <div class="field" style="border-bottom:none;">
+          <label>Max. dovolené dotykové napětí U<sub>Tp</sub></label>
           <div class="toggle-group" style="margin-top:4px;">
             <input type="radio" name="utp" id="utp75" value="75" onchange="updateRequirements()">
             <label for="utp75">75 V <span style="font-size:11px;opacity:.7">(kompenz. síť)</span></label>
@@ -428,7 +550,7 @@ body { background: #fff; }
             <input type="radio" name="utp" id="utpjine" value="jine" onchange="updateRequirements()">
             <label for="utpjine">Jiné</label>
           </div>
-          <input type="number" id="utp_jine_val" placeholder="Zadejte U_Tp (V)" style="margin-top:8px;display:none;" onchange="updateRequirements()">
+          <input type="number" id="utp_jine_val" placeholder="Zadejte U_Tp (V)" style="margin-top:8px;display:none;border-bottom:1px dotted #999 !important;" onchange="updateRequirements()">
         </div>
       </div>
 
@@ -448,39 +570,39 @@ body { background: #fff; }
     <div class="card-header"><span class="section-num">4</span> Konfigurace zemniče</div>
     <div class="card-body">
 
-      <div class="converter-box">
+      <div class="converter-box no-print">
         <h4>🔁 Převod obdélníkového zemniče na ekvivalentní kruhový (vzorec 3-7)</h4>
         <div class="grid3">
           <div class="field"><label>Strana a (m)</label><input type="number" id="rect_a" min="0" step="0.1" placeholder="délka"></div>
           <div class="field"><label>Strana b (m)</label><input type="number" id="rect_b" min="0" step="0.1" placeholder="šířka"></div>
           <div style="display:flex;align-items:flex-end;">
-            <button class="btn-calc no-print" onclick="convertRect()" style="padding:9px 20px;font-size:12px;">Přepočítat D</button>
+            <button class="btn-calc" onclick="convertRect()" style="padding:9px 20px;font-size:12px;">Přepočítat D</button>
           </div>
         </div>
         <div class="converter-result" id="rect-result">— zadejte strany a klikněte Přepočítat D</div>
         <div class="formula-note">D = √(4·a·b / π) &nbsp;|&nbsp; Výsledek D lze zadat do polí průměru kruhu níže.</div>
       </div>
 
-      <div class="divider"></div>
+      <div class="divider no-print"></div>
 
       <p style="font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-soft);margin-bottom:12px;">Kruhové obvodové zemniče (FeZn 30×4 mm)</p>
       <div class="grid3">
         <div class="field">
           <label>Průměr kruhu 1 — D₁ (m) <span class="info-tag">K1</span></label>
           <input type="number" id="d1" min="0" step="0.1" placeholder="— m">
-          <div class="unit">hloubka uložení z₁:</div>
+          <div class="unit">hloubka uložení z₁ (m):</div>
           <input type="number" id="z1" min="0" step="0.1" placeholder="0.6" value="0.6">
         </div>
         <div class="field">
           <label>Průměr kruhu 2 — D₂ (m) <span class="info-tag">K2</span></label>
           <input type="number" id="d2" min="0" step="0.1" placeholder="— m (nepovinné)">
-          <div class="unit">hloubka uložení z₂:</div>
+          <div class="unit">hloubka uložení z₂ (m):</div>
           <input type="number" id="z2" min="0" step="0.1" placeholder="0.8" value="0.8">
         </div>
         <div class="field">
           <label>Průměr kruhu 3 — D₃ (m) <span class="info-tag">K3</span></label>
           <input type="number" id="d3" min="0" step="0.1" placeholder="— m (nepovinné)">
-          <div class="unit">hloubka uložení z₃:</div>
+          <div class="unit">hloubka uložení z₃ (m):</div>
           <input type="number" id="z3" min="0" step="0.1" placeholder="1.0" value="1.0">
         </div>
       </div>
@@ -539,7 +661,7 @@ body { background: #fff; }
     <div class="card-body">
 
       <div id="calc-detail" style="display:none;margin-bottom:20px;">
-        <p style="font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-soft);margin-bottom:10px;">Dílčí odpory</p>
+        <p style="font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-soft);margin-bottom:10px;">Dílčí odpory zemničů</p>
         <div id="detail-grid" class="grid3"></div>
       </div>
 
@@ -557,7 +679,7 @@ body { background: #fff; }
             <div class="unit">Ω</div>
           </div>
           <div class="rr-item">
-            <div class="rr-label">ρ<sub>vyp</sub> použitá</div>
+            <div class="rr-label">ρ<sub>vyp</sub> použitá rezistivita</div>
             <div class="rr-val" id="res-rho">—</div>
             <div class="unit">Ωm</div>
           </div>
@@ -567,7 +689,7 @@ body { background: #fff; }
     </div>
   </div>
 
-  <div class="card">
+  <div class="card no-print">
     <div class="card-header"><span class="section-num">REF</span> Referenční tabulka požadovaných odporů dle PNE 33 3301-1</div>
     <div class="card-body">
       <table class="req-table">
@@ -582,6 +704,11 @@ body { background: #fff; }
         </tbody>
       </table>
     </div>
+  </div>
+
+  <div class="signature-block print-only">
+    <div class="signature-box">Měřil / Vypočítal (Jméno, podpis, datum)</div>
+    <div class="signature-box">Zástupce provozovatele (Podpis)</div>
   </div>
 
 </div><script>
