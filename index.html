@@ -343,68 +343,74 @@
 
   .print-only { display: none; }
 
-  /* ====== OFICIÁLNÍ TISKOVÝ STYL (PDF PROTOKOL) ====== */
+  /* ====== OFICIÁLNÍ TISKOVÝ STYL (PDF PROTOKOL - OPTIMALIZOVÁNO NA 1x A4) ====== */
   @media print {
-    @page { size: A4 portrait; margin: 1.5cm; }
+    @page { size: A4 portrait; margin: 12mm; } /* Zmenšené okraje pro více místa */
     
-    body { background: #fff; color: #000; font-size: 12px; }
+    body { background: #fff; color: #000; font-size: 11px; line-height: 1.3; }
     .no-print, .formula-note, .converter-box, .info-tag, .btn-row { display: none !important; }
     .print-only { display: flex !important; }
     .app-body { padding: 0; max-width: 100%; margin: 0; }
     
-    /* Hlavička čistá pro tisk */
+    /* Hlavička kompaktní */
     .site-header { 
       background: transparent !important; 
       color: #000 !important; 
-      padding: 0 0 15px 0; 
+      padding: 0 0 8px 0; 
       border-bottom: 2px solid #000; 
       align-items: flex-end; 
+      margin-bottom: 12px;
     }
-    .site-header .logo-mark { color: #000; font-weight: bold; }
-    .site-header h1 { color: #000; font-size: 18px; margin-bottom: 5px; }
-    .site-header .norm-badge { border: 1px solid #000; color: #000; background: transparent; }
-    .header-logos img { padding: 0; }
+    .site-header .logo-mark { color: #000; font-weight: bold; font-size: 9px; line-height: 1.2; }
+    .site-header h1 { color: #000; font-size: 16px; margin-bottom: 2px; }
+    .site-header .norm-badge { border: 1px solid #000; color: #000; background: transparent; padding: 2px 6px; font-size: 10px; }
+    .header-logos img { padding: 0; height: 28px; }
 
-    /* Karty na čistý text s rámečkem */
+    /* Karty těsně u sebe */
     .card { 
       border: none !important; 
-      border-bottom: 1px solid #ccc !important; 
       border-radius: 0; 
-      margin-bottom: 20px; 
+      margin-bottom: 8px; 
       page-break-inside: avoid;
     }
     .card-header { 
       background: transparent !important; 
       color: #000 !important; 
       border-bottom: 1px solid #000; 
-      padding: 5px 0; 
-      margin-bottom: 15px; 
+      padding: 2px 0; 
+      margin-bottom: 6px; 
+      font-size: 11px;
     }
     .card-header .section-num { 
       background: #000; 
       color: #fff; 
+      width: 16px; height: 16px;
+      font-size: 9px;
     }
     .card-body { padding: 0; }
 
-    /* Vstupní pole vypadají jako vypsaný text */
+    /* Mřížky s menší mezerou */
+    .grid2, .grid3, .grid4 { gap: 8px; }
+
+    /* Vstupní pole vysoce kompaktní */
+    .field { border-bottom: 1px dotted #ccc; padding-bottom: 2px; margin-bottom: 2px; }
+    label { font-size: 9px; color: #666 !important; margin-bottom: 1px; letter-spacing: 0.5px; }
     input[type=text], input[type=number], input[type=date], select, textarea {
       border: none !important;
       background: transparent !important;
       padding: 0 !important;
       font-weight: bold;
       color: #000 !important;
-      font-size: 13px;
-      appearance: none;
-      -webkit-appearance: none;
-      resize: none;
+      font-size: 12px;
+      height: auto;
+      appearance: none; -webkit-appearance: none;
       box-shadow: none !important;
     }
-    /* Podtržení políček pro jasnější čtení */
-    .field { border-bottom: 1px dotted #999; padding-bottom: 4px; }
-    textarea { min-height: auto; height: auto; border-bottom: none !important; }
+    textarea { min-height: auto; height: auto; overflow: hidden; border-bottom: none !important; }
+    .unit { font-size: 10px; }
 
-    /* Rádio tlačítka zobrazení vybrané hodnoty */
-    .toggle-group { border: none !important; width: 100%; display: block; }
+    /* Tlačítka voleb (Radio) kompaktní text */
+    .toggle-group { border: none !important; width: 100%; display: block; margin-top: 0; }
     .toggle-group label { display: none !important; }
     .toggle-group input[type=radio]:checked + label { 
       display: inline-block !important; 
@@ -413,43 +419,60 @@
       color: #000 !important; 
       font-weight: bold; 
       padding: 0; 
-      font-size: 14px;
+      font-size: 12px;
     }
 
-    /* Checkboxy */
-    .check-row label { font-weight: bold; }
+    /* Checkboxy těsnější */
+    .check-row { margin: 2px 0; }
+    .check-row label { font-weight: bold; font-size: 11px; }
 
-    /* Computed Boxy v sekci výsledků */
+    .divider { margin: 6px 0; background: #ddd; }
+
+    /* Computed Boxy (dílčí odpory) */
     .computed-box { 
       background: transparent !important; 
-      border: 1px solid #000 !important; 
+      border: 1px solid #aaa !important; 
       color: #000 !important;
+      padding: 4px 8px;
     }
-    .computed-box .cv-value { color: #000 !important; }
+    .computed-box .cv-label { font-size: 9px; color: #666 !important; }
+    .computed-box .cv-value { color: #000 !important; font-size: 16px; margin-top: 0; }
+    .computed-box .cv-model { font-size: 9px; color: #666 !important; margin-top: 0; }
 
-    /* Výsledný panel */
+    /* Výsledný panel menší a uhlazenější */
     .result-panel { 
       background: transparent !important; 
       border: 2px solid #000 !important; 
-      padding: 15px 20px;
+      padding: 8px 12px;
+      margin-top: 4px;
     }
+    .result-panel .verdict { font-size: 18px; margin-bottom: 6px; color: #000 !important; }
     .result-panel.ok .verdict, .result-panel.fail .verdict { color: #000 !important; }
+    .result-panel .result-row { margin-top: 4px; gap: 20px; }
+    .result-panel .rr-label { color: #666 !important; font-size: 9px; }
+    .result-panel .rr-val { font-size: 18px; color: #000 !important; }
     .result-panel.ok .rr-val.calc, .result-panel.fail .rr-val.calc { color: #000 !important; }
-    
-    /* Podpisový blok */
+
+    /* Tabulka požadavků */
+    .req-table th, .req-table td { padding: 4px 6px; font-size: 10px; border-color: #999; color: #000 !important; background: transparent !important; }
+
+    /* Postup výpočtu malým písmem */
+    #res-steps { font-size: 9.5px !important; line-height: 1.3 !important; color: #333 !important; margin-top: 8px !important; border-top: 1px dashed #ccc; padding-top: 6px; }
+
+    /* Podpisový blok blíže k obsahu */
     .signature-block { 
       display: flex; 
       justify-content: space-between; 
-      margin-top: 60px; 
+      margin-top: 25px; 
       page-break-inside: avoid;
     }
     .signature-box { 
       width: 40%; 
       text-align: center; 
       border-top: 1px solid #000; 
-      padding-top: 10px; 
+      padding-top: 4px; 
       font-family: var(--sans); 
-      font-size: 12px; 
+      font-size: 10px; 
       color: #000;
     }
   }
@@ -660,8 +683,8 @@
     <div class="card-header"><span class="section-num">6</span> Výsledky výpočtu</div>
     <div class="card-body">
 
-      <div id="calc-detail" style="display:none;margin-bottom:20px;">
-        <p style="font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-soft);margin-bottom:10px;">Dílčí odpory zemničů</p>
+      <div id="calc-detail" style="display:none;margin-bottom:12px;">
+        <p style="font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-soft);margin-bottom:6px;">Dílčí odpory zemničů</p>
         <div id="detail-grid" class="grid3"></div>
       </div>
 
