@@ -306,6 +306,20 @@
     border-radius: var(--radius);
   }
   .btn-print:hover { background: #e8eef5; }
+  .btn-share {
+    background: #fff;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+    padding: 14px 28px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: var(--radius);
+    transition: all 0.2s;
+  }
+  .btn-share:hover { background: #e8f5ee; }
   .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
 
   /* FORMULA NOTE */
@@ -634,6 +648,7 @@
       <div class="btn-row">
         <button class="btn-calc" onclick="calculate()">⚡ VYPOČÍTAT ZEMNÍ ODPOR</button>
         <button class="btn-print" onclick="window.print()">🖨 Tisk / PDF protokolu</button>
+        <button class="btn-share" onclick="copyShareLink()" id="btnShare">🔗 Zkopírovat odkaz (Uložit stavbu)</button>
       </div>
     </div>
   </div>
@@ -713,6 +728,71 @@ document.getElementById('utpjine').addEventListener('change', function() {
     document.getElementById('utp_jine_val').style.display = 'none';
   });
 });
+
+// ====== SAVE AND LOAD STATE VIA URL ======
+function copyShareLink() {
+  const state = {};
+  document.querySelectorAll('input[id], select[id], textarea[id]').forEach(el => {
+    if (el.type === 'checkbox' || el.type === 'radio') {
+      state[el.id] = el.checked;
+    } else {
+      state[el.id] = el.value;
+    }
+  });
+  
+  // Zakódování dat do bezpečeného textu pro URL
+  const hash = btoa(encodeURIComponent(JSON.stringify(state)));
+  const url = window.location.origin + window.location.pathname + '?data=' + hash;
+  
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('btnShare');
+    const originalText = btn.textContent;
+    btn.textContent = '✔ Odkaz zkopírován!';
+    btn.style.background = '#e8f5ee';
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.style.background = '#fff';
+    }, 3000);
+  });
+}
+
+function loadFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const dataParam = params.get('data');
+  if (dataParam) {
+    try {
+      const state = JSON.parse(decodeURIComponent(atob(dataParam)));
+      for (const id in state) {
+        const el = document.getElementById(id);
+        if (el) {
+          if (el.type === 'checkbox' || el.type === 'radio') {
+            el.checked = state[id];
+          } else {
+            el.value = state[id];
+          }
+        }
+      }
+      
+      // Obnova viditelnosti skrytých bloků
+      document.getElementById('paprsek-block').style.display = document.getElementById('use_paprsek').checked ? 'block' : 'none';
+      document.getElementById('tyce-block').style.display = document.getElementById('use_tyce').checked ? 'block' : 'none';
+      document.getElementById('utp_jine_val').style.display = document.getElementById('utpjine').checked ? 'block' : 'none';
+      
+      // Spuštění výpočtů pokud je vyplněna rezistivita
+      if (document.getElementById('manual_rho').value) {
+        setResistivity();
+      }
+      updateRequirements();
+      if (window._rvyp) {
+        calculate();
+      }
+    } catch (e) {
+      console.error("Nelze načíst data z URL", e);
+    }
+  }
+}
+window.addEventListener('DOMContentLoaded', loadFromUrl);
+
 
 // ====== RESISTIVITY CALCULATION (PŘÍMÉ ZADÁNÍ) ======
 function setResistivity() {
