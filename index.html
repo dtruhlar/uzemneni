@@ -3,355 +3,572 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulačka uzemnění pro distribuční soustavu (ČEZ / PNE / ČSN)</title>
+    <title>Protokol výpočtu uzemnění dle PNE 33 0000-4</title>
     <style>
         :root {
-            --primary: #ea640b; /* ČEZ like orange */
-            --primary-hover: #c45207;
-            --bg: #f4f7f6;
-            --text: #333;
-            --box-bg: #fff;
-            --border: #ddd;
+            --primary: #0056b3;
+            --primary-light: #e6f0fa;
+            --secondary: #6c757d;
             --success: #28a745;
-            --warning: #ffc107;
             --danger: #dc3545;
+            --bg-color: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-color: #212529;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.5;
             margin: 0;
             padding: 20px;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
-            background: var(--box-bg);
+            background: #fff;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         h1, h2, h3 {
-            color: #2c3e50;
-            border-bottom: 2px solid var(--primary);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .form-section {
-            background: #fdfdfd;
-            border: 1px solid var(--border);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-        }
-
-        .form-group {
+            color: var(--primary);
             margin-bottom: 15px;
         }
 
-        label {
-            display: block;
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+
+        .section {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            background: var(--primary-light);
+            padding: 10px 15px;
+            margin: -20px -20px 20px -20px;
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 6px 6px 0 0;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
             font-weight: 600;
             margin-bottom: 5px;
+            font-size: 0.9em;
         }
 
-        input[type="number"], select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border);
-            border-radius: 5px;
-            font-size: 16px;
-            box-sizing: border-box;
+        input[type="text"], input[type="number"], input[type="date"], select {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1em;
+            transition: border-color 0.15s;
         }
 
-        .radio-group {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
+        input:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
         }
 
-        .radio-label {
-            display: flex;
-            align-items: center;
-            font-weight: normal;
-            cursor: pointer;
-            background: #f0f0f0;
-            padding: 10px 15px;
-            border-radius: 5px;
-            transition: background 0.2s;
+        .calculator-box {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
         }
 
-        .radio-label:hover {
-            background: #e0e0e0;
-        }
-
-        .radio-label input {
-            margin-right: 10px;
+        .calculator-box h4 {
+            margin-top: 0;
+            color: #856404;
         }
 
         button {
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            font-weight: bold;
+            padding: 12px 25px;
+            font-size: 1.1em;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: bold;
+        }
+
+        button:hover { background-color: #004494; }
+
+        button.calc-btn {
+            background-color: #28a745;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        button.calc-btn:hover { background-color: #218838; }
+
+        /* Protokol styles */
+        #protocolArea { display: none; margin-top: 40px; }
+        
+        .protocol-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .table-protocol {
             width: 100%;
-            transition: background 0.3s;
+            border-collapse: collapse;
+            margin-bottom: 20px;
         }
 
-        button:hover {
-            background-color: var(--primary-hover);
+        .table-protocol th, .table-protocol td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
         }
 
-        .results {
-            display: none;
-            margin-top: 30px;
-            padding: 25px;
-            border-radius: 8px;
-            background: #fff;
-            border: 2px solid var(--border);
-        }
+        .table-protocol th { background-color: #f2f2f2; width: 30%; }
 
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid #eee;
-            padding: 10px 0;
-            font-size: 16px;
-        }
-
-        .result-row strong {
-            color: #2c3e50;
-        }
-
-        .value-highlight {
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .alert {
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-
-        .alert-info { background: #e2f0fb; border-left: 5px solid #3498db; color: #1f618d; }
-        .alert-warning { background: #fff8e1; border-left: 5px solid var(--warning); color: #7f6000; }
-        .alert-danger { background: #fdecea; border-left: 5px solid var(--danger); color: #900; }
-
-        .design-box {
-            background: #e9ecef;
+        .result-box {
+            text-align: center;
             padding: 20px;
+            border: 3px solid;
             border-radius: 8px;
             margin-top: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
         }
 
-        .note {
-            font-size: 0.85em;
-            color: #666;
-            margin-top: 5px;
+        .result-pass { border-color: var(--success); color: var(--success); background-color: #d4edda; }
+        .result-fail { border-color: var(--danger); color: var(--danger); background-color: #f8d7da; }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; max-width: 100%; padding: 0; }
+            #inputForm { display: none; }
+            #protocolArea { display: block !important; }
+            .no-print { display: none !important; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Výpočet uzemnění a posouzení dle PNE/ČSN</h1>
-    <p>Aplikace pro návrh a posouzení zemničů distribuční soustavy na základě měření rezistivity půdy 4-vodičovou (Wennerovou) metodou.</p>
-
-    <form id="groundingForm">
-        <div class="form-section">
-            <h3>1. Naměřené hodnoty (4-vodičová metoda)</h3>
-            <div class="form-group">
-                <label for="resistance">Naměřený odpor na přístroji (R) [Ω]:</label>
-                <input type="number" id="resistance" step="0.01" min="0.01" required placeholder="Např. 12.5">
-            </div>
-            <div class="form-group">
-                <label for="distance">Vzdálenost elektrod (a) [m]:</label>
-                <input type="number" id="distance" step="0.1" min="0.1" required placeholder="Např. 2">
-                <div class="note">Vzdálenost mezi sousedními sondami při Wennerově uspořádání.</div>
-            </div>
-        </div>
-
-        <div class="form-section">
-            <h3>2. Typ uzemňovaného zařízení</h3>
-            <div class="radio-group">
-                <label class="radio-label">
-                    <input type="radio" name="deviceType" value="DTS" required> 
-                    DTS (Distribuční trafostanice)
-                </label>
-                <label class="radio-label">
-                    <input type="radio" name="deviceType" value="UO"> 
-                    ÚO (Úsekový odpojovač / spínač vn)
-                </label>
-                <label class="radio-label">
-                    <input type="radio" name="deviceType" value="PB"> 
-                    PB / PS (Přípojková / Pojistková skříň nn)
-                </label>
-            </div>
-        </div>
-
-        <div class="form-section">
-            <h3>3. Lokalita (Kroková a dotyková napětí)</h3>
-            <div class="form-group">
-                <label for="locationType">Vyberte charakter okolí zařízení:</label>
-                <select id="locationType" required>
-                    <option value="normal">Běžný terén (volně přístupné, tráva, chodník)</option>
-                    <option value="agriculture">Zemědělská oblast (zvýšené riziko pro zvířata, ohrady)</option>
-                    <option value="highrisk">Vysoké riziko osob (dětská hřiště, koupaliště, kempy)</option>
-                    <option value="closed">Uzavřený elektrický provoz (nepřístupné veřejnosti)</option>
-                </select>
-            </div>
-        </div>
-
-        <button type="button" onclick="calculateGrounding()">Provést výpočet a návrh</button>
-    </form>
-
-    <div class="results" id="resultsBlock">
-        <h2>Výsledky výpočtu</h2>
+    <div id="inputForm">
+        <h1>Kalkulačka uzemnění a tvorba protokolu (PNE 33 0000-4)</h1>
         
-        <div class="result-row">
-            <span>Měrný odpor půdy (Rezistivita ρ):</span>
-            <span class="value-highlight" id="resRho">-</span>
-        </div>
-        <div class="result-row">
-            <span>Požadovaný zemní odpor dle PNE (R_max):</span>
-            <span class="value-highlight" id="resTargetR">-</span>
+        <form id="groundingForm">
+            <div class="section">
+                <div class="section-title">1. Identifikační údaje stavby a měření</div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Název stavby</label>
+                        <input type="text" id="nazevStavby" placeholder="Např. Přeložka VN..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>IV stavby (ID)</label>
+                        <input type="text" id="ivStavby" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Místo měření / Lokalita</label>
+                        <input type="text" id="misto" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Datum měření</label>
+                        <input type="date" id="datum" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Měřící zařízení</label>
+                        <input type="text" id="pristroj" value="UT 572" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Podmínky měření</label>
+                        <input type="text" id="podminky" placeholder="Např. sucho, vlhko, zataženo...">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">2. Parametry sítě a půdy</div>
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label>Měrná rezistivita půdy ρ [Ω·m]</label>
+                        <input type="number" id="rho" step="0.1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Typ zařízení</label>
+                        <select id="typZarizeni" onchange="updateRequiredResistance()" required>
+                            <option value="UO">ÚO (Úsekový odpínač)</option>
+                            <option value="TS">TS (Trafostanice)</option>
+                            <option value="PB_VN">PB VN (Podpěrný bod VN)</option>
+                            <option value="PB_NN">PB NN (Podpěrný bod NN)</option>
+                            <option value="PB_NN_END">PB NN na konci sítě (uzel)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Požadovaný zemní odpor dle PNE [Ω]</label>
+                        <input type="text" id="maxOdpor" readonly style="background: #e9ecef; font-weight: bold;">
+                    </div>
+                    <div class="form-group">
+                        <label>Max. dotykové napětí</label>
+                        <select id="dotykoveNapeti" onchange="checkCustomVoltage()">
+                            <option value="75">75 V</option>
+                            <option value="150">150 V</option>
+                            <option value="custom">Jiné...</option>
+                        </select>
+                        <input type="number" id="dotykoveNapetiCustom" placeholder="Zadejte hodnotu" style="display:none; margin-top:5px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Koeficient typu uzemnění</label>
+                        <input type="number" id="koeficientUzemneni" step="0.01" value="1.00">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">3. Konfigurace a geometrie zemniče</div>
+
+                <div class="calculator-box">
+                    <h4>Pomocná kalkulačka: Přepočet obdélníkového základu na ekvivalentní kruh</h4>
+                    <div class="grid-3" style="align-items: end;">
+                        <div class="form-group">
+                            <label>Šířka obdélníku a [m]</label>
+                            <input type="number" id="rectA" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>Délka obdélníku b [m]</label>
+                            <input type="number" id="rectB" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="calc-btn" onclick="calculateEquivalentRing()">Vypočítat ekv. průměr D</button>
+                        </div>
+                    </div>
+                    <div id="rectResult" style="font-weight: bold; color: var(--primary); margin-top: 10px;"></div>
+                </div>
+
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label>Průměr kruhu 1 (D1) [m]</label>
+                        <input type="number" id="ring1" step="0.1" placeholder="Ekvivalentní nebo skutečný">
+                    </div>
+                    <div class="form-group">
+                        <label>Průměr kruhu 2 (D2) [m]</label>
+                        <input type="number" id="ring2" step="0.1" placeholder="Volitelné">
+                    </div>
+                    <div class="form-group">
+                        <label>Průměr kruhu 3 (D3) [m]</label>
+                        <input type="number" id="ring3" step="0.1" placeholder="Volitelné">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Počet paprsků (hvězda)</label>
+                        <input type="number" id="rayCount" min="0" step="1" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Délka jednoho paprsku [m]</label>
+                        <input type="number" id="rayLength" step="0.1">
+                    </div>
+                    <div></div> <div class="form-group">
+                        <label>Počet zemnících tyčí</label>
+                        <input type="number" id="rodCount" min="0" step="1" value="0" oninput="updateRodFactor()">
+                    </div>
+                    <div class="form-group">
+                        <label>Délka jedné tyče [m]</label>
+                        <select id="rodLength" onchange="updateRodFactor()">
+                            <option value="1.5">1,5 m</option>
+                            <option value="2.0">2,0 m</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Vzájemná vzdálenost tyčí [m]</label>
+                        <input type="number" id="rodDistance" step="0.1" oninput="updateRodFactor()">
+                        <small style="color: #666;">Aproximovaný koef. využití (η): <span id="rodFactorOut" style="font-weight:bold;">-</span></small>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" onclick="generateProtocol()" style="width: 100%; padding: 15px; font-size: 1.2em;">Vypočítat a vygenerovat protokol</button>
+        </form>
+    </div>
+
+    <div id="protocolArea">
+        <button class="no-print" onclick="window.print()" style="float: right; background: #6c757d;">Tisk protokolu</button>
+        <button class="no-print" onclick="document.getElementById('protocolArea').style.display='none'; document.getElementById('inputForm').style.display='block';" style="float: right; margin-right: 10px; background: var(--secondary);">Zpět na zadání</button>
+        
+        <div class="protocol-header">
+            <h2>PROTOKOL O VÝPOČTU UZEMŇOVACÍ SOUSTAVY</h2>
+            <h3>dle normy PNE 33 0000-4</h3>
         </div>
 
-        <div id="alertBox" class="alert"></div>
+        <table class="table-protocol">
+            <tr><th>Název stavby</th><td id="p_nazev"></td></tr>
+            <tr><th>IV stavby</th><td id="p_iv"></td></tr>
+            <tr><th>Místo měření</th><td id="p_misto"></td></tr>
+            <tr><th>Datum měření</th><td id="p_datum"></td></tr>
+            <tr><th>Měřící zařízení</th><td id="p_pristroj"></td></tr>
+            <tr><th>Podmínky měření</th><td id="p_podminky"></td></tr>
+        </table>
 
-        <div class="design-box">
-            <h3>Konstrukční návrh zemniče</h3>
-            <p>Aby byl splněn požadavek normy v této půdě, je nutné zřídit zemnič o minimálně těchto parametrech (vyberte jednu z variant):</p>
-            <div class="result-row">
-                <span>Varianta A: Pásek FeZn (uložen v 0.5 - 1 m)</span>
-                <strong id="resStripLength">-</strong>
-            </div>
-            <div class="result-row">
-                <span>Varianta B: Zemnící tyče (zatlučené, např. 2m)</span>
-                <strong id="resRodCount">-</strong>
-            </div>
-            <div class="note">* Výpočet délky pásku je zjednodušený vzorec L ≈ 2·ρ / R. Výpočet tyčí uvažuje tyče délky 2m. Skutečná hodnota se může mírně lišit v závislosti na hloubce uložení a homogenitě půdy.</div>
-        </div>
+        <table class="table-protocol">
+            <tr><th>Měrná rezistivita půdy (ρ)</th><td id="p_rho"></td></tr>
+            <tr><th>Typ uzemňovaného zařízení</th><td id="p_typ"></td></tr>
+            <tr><th>Maximální dotykové napětí</th><td id="p_dotyk"></td></tr>
+            <tr><th>Koeficient typu uzemnění</th><td id="p_koef"></td></tr>
+        </table>
 
-        <div id="safetyMeasuresBox" class="alert alert-info">
-            </div>
+        <table class="table-protocol">
+            <tr><th colspan="2" style="text-align: center; background-color: #d1ecf1;">Složení navrženého zemniče</th></tr>
+            <tr><th>Kruhové zemniče (průměry)</th><td id="p_kruhy"></td></tr>
+            <tr><th>Paprskové zemniče</th><td id="p_paprsky"></td></tr>
+            <tr><th>Zemnící tyče</th><td id="p_tyce"></td></tr>
+        </table>
+
+        <table class="table-protocol" style="border: 2px solid #333;">
+            <tr>
+                <th style="background-color: #e9ecef; font-size: 1.1em;">Požadovaný zemní odpor (dle PNE)</th>
+                <td id="p_reqR" style="font-size: 1.1em; font-weight: bold;"></td>
+            </tr>
+            <tr>
+                <th style="background-color: #e9ecef; font-size: 1.1em;">Celkový vypočítaný zemní odpor (R_celk)</th>
+                <td id="p_calcR" style="font-size: 1.1em; font-weight: bold;"></td>
+            </tr>
+        </table>
+
+        <div id="p_vysledek" class="result-box"></div>
     </div>
 </div>
 
 <script>
-    function calculateGrounding() {
-        // Získání hodnot z formuláře
-        const R_measured = parseFloat(document.getElementById('resistance').value);
-        const a = parseFloat(document.getElementById('distance').value);
-        const deviceTypeNodes = document.getElementsByName('deviceType');
-        let deviceType = null;
-        for (let i = 0; i < deviceTypeNodes.length; i++) {
-            if (deviceTypeNodes[i].checked) {
-                deviceType = deviceTypeNodes[i].value;
-                break;
-            }
-        }
-        const locationType = document.getElementById('locationType').value;
+    // Zobrazení custom dotykového napětí
+    function checkCustomVoltage() {
+        const sel = document.getElementById('dotykoveNapeti').value;
+        const cust = document.getElementById('dotykoveNapetiCustom');
+        cust.style.display = (sel === 'custom') ? 'block' : 'none';
+    }
 
-        // Validace vstupů
-        if (isNaN(R_measured) || isNaN(a) || !deviceType) {
-            alert("Prosím vyplňte všechny vstupní hodnoty a vyberte typ zařízení.");
+    // Získání požadovaného odporu na základě typu zařízení a rezistivity půdy
+    function updateRequiredResistance() {
+        const typ = document.getElementById('typZarizeni').value;
+        const rho = parseFloat(document.getElementById('rho').value) || 0;
+        let R_req = 0;
+
+        if (typ === 'UO') {
+            R_req = (rho > 500) ? 15 : 10;
+        } else if (typ === 'TS') {
+            R_req = 2; // Obvyklý požadavek pro sdružené uzemnění vn/nn
+        } else if (typ === 'PB_VN') {
+            R_req = (rho > 500) ? 15 : 10;
+        } else if (typ === 'PB_NN') {
+            R_req = 15;
+        } else if (typ === 'PB_NN_END') {
+            R_req = 5;
+        }
+
+        document.getElementById('maxOdpor').value = R_req > 0 ? R_req + " Ω" : "-";
+        return R_req;
+    }
+
+    // Event listener pro dynamický update odporu při změně rezistivity
+    document.getElementById('rho').addEventListener('input', updateRequiredResistance);
+
+    // Přepočet obdélníku na kruh
+    function calculateEquivalentRing() {
+        const a = parseFloat(document.getElementById('rectA').value);
+        const b = parseFloat(document.getElementById('rectB').value);
+        
+        if (isNaN(a) || isNaN(b) || a <= 0 || b <= 0) {
+            alert("Zadejte platné rozměry obdélníku.");
+            return;
+        }
+        
+        // Vzorec pro ekvivalentní průměr ze stejné plochy
+        const D = 2 * Math.sqrt((a * b) / Math.PI);
+        document.getElementById('rectResult').innerText = "Ekvivalentní průměr D = " + D.toFixed(2) + " m";
+        
+        // Automaticky vložit do Kruhu 1 pokud je prázdný
+        if (!document.getElementById('ring1').value) {
+            document.getElementById('ring1').value = D.toFixed(2);
+        }
+    }
+
+    // Aproximace koeficientu využití tyče (η)
+    function updateRodFactor() {
+        const count = parseInt(document.getElementById('rodCount').value) || 0;
+        const len = parseFloat(document.getElementById('rodLength').value);
+        const dist = parseFloat(document.getElementById('rodDistance').value);
+        
+        if (count === 0) {
+            document.getElementById('rodFactorOut').innerText = "-";
+            return 1;
+        }
+        if (count === 1) {
+            document.getElementById('rodFactorOut').innerText = "1.00 (Jedna tyč)";
+            return 1.0;
+        }
+        if (isNaN(len) || isNaN(dist) || len <= 0) {
+            document.getElementById('rodFactorOut').innerText = "Doplňte vzdálenost";
+            return 1.0;
+        }
+
+        const ratio = dist / len;
+        // Aproximace PNE: rostoucí koeficient s poměrem vzdálenost/délka
+        let eta = 0.6 + (0.15 * ratio);
+        if (eta > 0.95) eta = 0.95;
+        if (eta < 0.40) eta = 0.40;
+
+        document.getElementById('rodFactorOut').innerText = eta.toFixed(2);
+        return eta;
+    }
+
+    // Hlavní výpočet a generování protokolu
+    function generateProtocol() {
+        // Validace
+        if(!document.getElementById('groundingForm').checkValidity()) {
+            alert("Prosím vyplňte všechna povinná pole.");
             return;
         }
 
-        // 1. Výpočet rezistivity půdy (Wennerova metoda: ρ = 2 * π * a * R)
-        const rho = 2 * Math.PI * a * R_measured;
-        
-        // 2. Stanovení maximálního dovoleného odporu dle typu zařízení a norem
-        let targetR = 0;
-        let limitReason = "";
+        const rho = parseFloat(document.getElementById('rho').value);
+        const R_req = updateRequiredResistance();
 
-        if (deviceType === "DTS") {
-            targetR = 2.0; 
-            limitReason = "Požadavek pro sdružené uzemnění vn/nn (obvykle max 2 Ω). Pro přesnější určení by se musel znát zemní poruchový proud sítě.";
-        } else if (deviceType === "UO") {
-            if (rho > 500) {
-                targetR = 15.0;
-                limitReason = "PNE 33 0000-1 umožňuje u úsekových odpojovačů při rezistivitě půdy nad 500 Ω·m hodnotu až 15 Ω.";
-            } else {
-                targetR = 10.0;
-                limitReason = "Standardní požadavek PNE 33 0000-1 pro uzemnění úsekových odpojovačů je max 10 Ω.";
-            }
-        } else if (deviceType === "PB") {
-            targetR = 15.0;
-            limitReason = "Dle ČSN 33 2000-5-54 a standardů distribuce je max odpor přizemnění PEN na konci vedení/odbočce obvykle 15 Ω (v uzlu zdroje max 5 Ω).";
+        // 1. Kruhy
+        const d1 = parseFloat(document.getElementById('ring1').value) || 0;
+        const d2 = parseFloat(document.getElementById('ring2').value) || 0;
+        const d3 = parseFloat(document.getElementById('ring3').value) || 0;
+        
+        let R_rings = Infinity;
+        if (d1 > 0) {
+            // Výpočet pro pásek v zemi (průměr vodiče cca 0.015m)
+            let r_base = (rho / (Math.PI * d1)) * Math.log((4 * d1) / 0.015);
+            // Redukce pro více kruhů dle PNE
+            if (d2 > 0) r_base *= 0.85; 
+            if (d3 > 0) r_base *= 0.75;
+            R_rings = r_base;
         }
 
-        // 3. Opatření pro kroková a dotyková napětí
-        let safetyMeasures = "<strong>Požadavky na kroková a dotyková napětí:</strong><br>";
+        // 2. Paprsky
+        const rayCount = parseInt(document.getElementById('rayCount').value) || 0;
+        const rayLen = parseFloat(document.getElementById('rayLength').value) || 0;
         
-        if (locationType === "highrisk") {
-            safetyMeasures += "⚠️ <strong>Lokalita s vysokým rizikem (děti, koupaliště):</strong><br>";
-            safetyMeasures += "- Je bezpodmínečně nutné instalovat kruhový strojený zemnič (kolem stožáru/DTS v hloubce 0.5m a vzdálenosti cca 1m) pro řízení potenciálu.<br>";
-            safetyMeasures += "- Ovládací páky (u ÚO) musí mít vložený izolátor nebo izolované stanoviště (kovová rohož spojená s konstrukcí).<br>";
-            safetyMeasures += "- Doporučuje se úprava povrchu (např. 10 cm vrstva štěrku nebo asfaltu) do vzdálenosti 1m od zařízení k izolaci krokového napětí.";
-        } else if (locationType === "agriculture") {
-            safetyMeasures += "⚠️ <strong>Zemědělská oblast:</strong><br>";
-            safetyMeasures += "- Zvýšené riziko pro hospodářská zvířata (bezpečná mez dotykového napětí je zde snížena, obvykle na 25V střídavých).<br>";
-            safetyMeasures += "- Je nutné dbát na to, aby v blízkosti nebyly kovové ohrady, případně je nutné je od elektrického zařízení galvanicky oddělit.<br>";
-            safetyMeasures += "- Doporučena je instalace ochranného kruhového zemniče pro vyrovnání potenciálu.";
-        } else if (locationType === "closed") {
-            safetyMeasures += "ℹ️ <strong>Uzavřený provoz:</strong><br>";
-            safetyMeasures += "- Zařízení není přístupné laické veřejnosti. Konstrukce uzemnění se řídí standardním výpočtem odporu.<br>";
-            safetyMeasures += "- Zaměřte se na bezpečné ekvipotenciální pospojování všech vodivých neživých částí v objektu.";
+        let R_rays = Infinity;
+        if (rayCount > 0 && rayLen > 0) {
+            const l_tot = rayCount * rayLen;
+            let k = 1.0;
+            if (rayCount === 2) k = 1.1;
+            if (rayCount === 3) k = 1.2;
+            if (rayCount >= 4) k = 1.3;
+            
+            R_rays = (rho / (Math.PI * l_tot)) * Math.log((2 * rayLen) / 0.015) * k;
+        }
+
+        // 3. Tyče
+        const rodCount = parseInt(document.getElementById('rodCount').value) || 0;
+        const rodLen = parseFloat(document.getElementById('rodLength').value) || 0;
+        const eta = updateRodFactor();
+
+        let R_rods = Infinity;
+        if (rodCount > 0 && rodLen > 0) {
+            // Vzorec pro tyč (průměr cca 0.02m)
+            let r_one = (rho / (2 * Math.PI * rodLen)) * Math.log((4 * rodLen) / 0.02);
+            R_rods = r_one / (rodCount * eta);
+        }
+
+        // 4. Celkový odpor (paralelní spojení s koeficientem vzájemného ovlivnění)
+        let parts = 0;
+        if (R_rings !== Infinity) parts++;
+        if (R_rays !== Infinity) parts++;
+        if (R_rods !== Infinity) parts++;
+
+        let R_celk = 0;
+        if (parts === 0) {
+            alert("Není zadána žádná geometrie zemniče (kruh, paprsek nebo tyč).");
+            return;
         } else {
-            safetyMeasures += "ℹ️ <strong>Běžný terén:</strong><br>";
-            if (deviceType === "UO") {
-                safetyMeasures += "- U ovládacího pohonu nezapomeňte na zemnící kovovou rohož pro obsluhu nebo bezpečně izolované táhlo, aby nedošlo k úrazu dotykovým napětím při spínání.";
-            } else if (deviceType === "DTS") {
-                safetyMeasures += "- Standardní ochrana uložením zemniče a obvodovým páskem. Dodržte minimální hloubky uložení (cca 0.5 - 0.7 m).";
-            } else {
-                safetyMeasures += "- Postačí standardní uložení pásku nebo tyče do předepsané hloubky.";
+            let inv_R = 0;
+            if (R_rings !== Infinity) inv_R += (1 / R_rings);
+            if (R_rays !== Infinity) inv_R += (1 / R_rays);
+            if (R_rods !== Infinity) inv_R += (1 / R_rods);
+            
+            R_celk = 1 / inv_R;
+            // Pokud je kombinace více typů, zvyšujeme odpor o 15 % kvůli vzájemnému ovlivnění
+            if (parts > 1) {
+                R_celk *= 1.15;
             }
         }
 
-        // 4. Návrh délky zemniče (orientační fyzikální vzorce)
-        // Pásek: L = 2 * rho / R
-        const stripLength = (2 * rho) / targetR;
+        // Přenos do protokolu
+        document.getElementById('p_nazev').innerText = document.getElementById('nazevStavby').value;
+        document.getElementById('p_iv').innerText = document.getElementById('ivStavby').value;
+        document.getElementById('p_misto').innerText = document.getElementById('misto').value;
         
-        // Tyče (Uvažujeme standardní tyče délky L_rod = 2m)
-        // Vzorec pro tyč: R_tyc = (rho / L_rod) => Jedna tyč má odpor cca rho/2
-        // Pro dosažení targetR potřebujeme paralelně zapojit N tyčí. (Efektivita klesá, použijeme koeficient cca 1.2)
-        const resistanceOneRod = rho / 2;
-        let rodsNeeded = Math.ceil((resistanceOneRod / targetR) * 1.2); 
-        if (rodsNeeded < 1) rodsNeeded = 1;
+        let dateObj = new Date(document.getElementById('datum').value);
+        document.getElementById('p_datum').innerText = dateObj.toLocaleDateString('cs-CZ');
+        
+        document.getElementById('p_pristroj').innerText = document.getElementById('pristroj').value;
+        document.getElementById('p_podminky').innerText = document.getElementById('podminky').value || "-";
 
-        // 5. Vykreslení výsledků do HTML
-        document.getElementById('resRho').innerHTML = rho.toFixed(1) + " Ω·m";
-        document.getElementById('resTargetR').innerHTML = "max. " + targetR.toFixed(1) + " Ω";
+        document.getElementById('p_rho').innerText = rho.toFixed(1) + " Ω·m";
         
-        const alertBox = document.getElementById('alertBox');
-        alertBox.innerHTML = limitReason;
-        alertBox.className = "alert alert-warning"; // Default info
+        const typSel = document.getElementById('typZarizeni');
+        document.getElementById('p_typ').innerText = typSel.options[typSel.selectedIndex].text;
+        
+        let dotyk = document.getElementById('dotykoveNapeti').value;
+        if (dotyk === 'custom') dotyk = document.getElementById('dotykoveNapetiCustom').value;
+        document.getElementById('p_dotyk').innerText = dotyk + " V";
+        document.getElementById('p_koef').innerText = document.getElementById('koeficientUzemneni').value;
 
-        document.getElementById('resStripLength').innerHTML = stripLength.toFixed(1) + " metrů";
-        document.getElementById('resRodCount').innerHTML = rodsNeeded + " ks (á 2m)";
-        
-        document.getElementById('safetyMeasuresBox').innerHTML = safetyMeasures;
+        // Složení zemniče (textový výpis)
+        let k_text = [];
+        if(d1 > 0) k_text.push("D1=" + d1 + "m");
+        if(d2 > 0) k_text.push("D2=" + d2 + "m");
+        if(d3 > 0) k_text.push("D3=" + d3 + "m");
+        document.getElementById('p_kruhy').innerText = k_text.length > 0 ? k_text.join(", ") : "Nejsou navrženy";
 
-        // Zobrazení celého bloku
-        document.getElementById('resultsBlock').style.display = "block";
-        
-        // Plynulý scroll na výsledky
-        document.getElementById('resultsBlock').scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('p_paprsky').innerText = (rayCount > 0) ? (rayCount + " ks á " + rayLen + " m") : "Nejsou navrženy";
+        document.getElementById('p_tyce').innerText = (rodCount > 0) ? (rodCount + " ks á " + rodLen + " m (η=" + eta.toFixed(2) + ")") : "Nejsou navrženy";
+
+        // Výsledek
+        document.getElementById('p_reqR').innerText = "Max " + R_req.toFixed(2) + " Ω";
+        document.getElementById('p_calcR').innerText = R_celk.toFixed(2) + " Ω";
+
+        const vysledekBox = document.getElementById('p_vysledek');
+        if (R_celk <= R_req) {
+            vysledekBox.innerText = "VYHOVUJE";
+            vysledekBox.className = "result-box result-pass";
+        } else {
+            vysledekBox.innerText = "NEVYHOVUJE";
+            vysledekBox.className = "result-box result-fail";
+        }
+
+        // Zobrazení
+        document.getElementById('inputForm').style.display = 'none';
+        document.getElementById('protocolArea').style.display = 'block';
+        window.scrollTo(0,0);
     }
+
+    // Inicializace při načtení
+    window.onload = function() {
+        document.getElementById('datum').valueAsDate = new Date();
+    };
 </script>
 
 </body>
