@@ -1,14 +1,379 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protokol o měření uzemnění – PNE 33 0000-4</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0ede8;
+    --surface: #faf9f7;
+    --border: #c8c0b4;
+    --border-strong: #8a7f72;
+    --text: #1a1714;
+    --text-soft: #5a5248;
+    --accent: #1e3a5f;
+    --accent2: #c0392b;
+    --accent3: #27ae60;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --radius: 4px;
+    --ok: #1a6b3a;
+    --ok-bg: #e8f5ee;
+    --fail: #8b1a1a;
+    --fail-bg: #fdf0f0;
+    --warn: #7a4a00;
+    --warn-bg: #fdf6e3;
+  }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+font-family: var(--sans);
+background: var(--bg);
+color: var(--text);
+min-height: 100vh;
+padding: 0;
+}
+
+/* HEADER */
+.site-header {
+background: var(--accent);
+color: #fff;
+padding: 18px 40px;
+display: flex;
+align-items: center;
+gap: 24px;
+border-bottom: 4px solid #c0a060;
+}
+.site-header .logo-mark {
+font-family: var(--mono);
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 2px;
+text-transform: uppercase;
+opacity: 0.7;
+line-height: 1.5;
+}
+.site-header h1 {
+font-size: 18px;
+font-weight: 700;
+letter-spacing: 0.5px;
+}
+.site-header .norm-badge {
+margin-left: auto;
+font-family: var(--mono);
+font-size: 12px;
+background: rgba(255,255,255,0.15);
+border: 1px solid rgba(255,255,255,0.3);
+padding: 4px 12px;
+border-radius: 20px;
+}
+
+/* LAYOUT */
+.app-body {
+max-width: 1100px;
+margin: 0 auto;
+padding: 32px 24px 80px;
+}
+
+/* SECTION */
+.card {
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: var(--radius);
+margin-bottom: 24px;
+overflow: hidden;
+}
+.card-header {
+background: var(--accent);
+color: #fff;
+padding: 10px 20px;
+font-family: var(--mono);
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 2px;
+text-transform: uppercase;
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.card-header .section-num {
+background: rgba(255,255,255,0.2);
+width: 22px; height: 22px;
+border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+font-size: 10px;
+}
+.card-body { padding: 20px 24px; }
+
+/* GRID */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.grid4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
+@media(max-width:700px){.grid2,.grid3,.grid4{grid-template-columns:1fr;}}
+
+/* FORM ELEMENTS */
+.field { display: flex; flex-direction: column; gap: 5px; }
+label {
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 0.8px;
+text-transform: uppercase;
+color: var(--text-soft);
+font-family: var(--mono);
+}
+input[type=text], input[type=number], input[type=date], select, textarea {
+border: 1px solid var(--border);
+border-radius: var(--radius);
+padding: 9px 12px;
+font-family: var(--sans);
+font-size: 14px;
+background: #fff;
+color: var(--text);
+transition: border 0.15s;
+width: 100%;
+}
+input:focus, select:focus, textarea:focus {
+outline: none;
+border-color: var(--accent);
+box-shadow: 0 0 0 3px rgba(30,58,95,0.1);
+}
+textarea { resize: vertical; min-height: 60px; }
+.unit {
+font-family: var(--mono);
+font-size: 12px;
+color: var(--text-soft);
+margin-top: 2px;
+}
+
+/* RESIS TABLE */
+.resis-table { width: 100%; border-collapse: collapse; }
+.resis-table th {
+background: #e8e4de;
+font-family: var(--mono);
+font-size: 11px;
+letter-spacing: 1px;
+text-transform: uppercase;
+padding: 8px 12px;
+text-align: left;
+border: 1px solid var(--border);
+}
+.resis-table td {
+border: 1px solid var(--border);
+padding: 6px 12px;
+}
+.resis-table input { border: none; background: transparent; font-size: 14px; width: 100%; }
+.resis-table input:focus { outline: 2px solid var(--accent); border-radius: 2px; }
+
+/* COMPUTED VALUES */
+.computed-box {
+background: #e8e4de;
+border: 1px solid var(--border-strong);
+border-radius: var(--radius);
+padding: 14px 18px;
+font-family: var(--mono);
+}
+.computed-box .cv-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-soft); }
+.computed-box .cv-value { font-size: 22px; font-weight: 600; color: var(--accent); margin-top: 4px; }
+.computed-box .cv-unit { font-size: 12px; color: var(--text-soft); }
+.computed-box .cv-model { font-size: 11px; margin-top: 4px; }
+
+/* RECT CONVERTER */
+.converter-box {
+background: #f5f0e8;
+border: 1px dashed var(--border-strong);
+border-radius: var(--radius);
+padding: 16px 20px;
+margin-top: 12px;
+}
+.converter-box h4 {
+font-family: var(--mono);
+font-size: 11px;
+letter-spacing: 1.5px;
+text-transform: uppercase;
+color: var(--text-soft);
+margin-bottom: 10px;
+}
+.converter-result {
+font-family: var(--mono);
+font-size: 13px;
+margin-top: 10px;
+padding: 8px 12px;
+background: #fff;
+border: 1px solid var(--border);
+border-radius: var(--radius);
+}
+
+/* TOGGLE GROUP */
+.toggle-group { display: flex; gap: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; width: fit-content; }
+.toggle-group input[type=radio] { display: none; }
+.toggle-group label {
+padding: 8px 16px;
+font-size: 13px;
+font-family: var(--sans);
+text-transform: none;
+letter-spacing: 0;
+font-weight: 500;
+cursor: pointer;
+border-right: 1px solid var(--border);
+background: #fff;
+color: var(--text);
+transition: background 0.15s, color 0.15s;
+}
+.toggle-group label:last-of-type { border-right: none; }
+.toggle-group input[type=radio]:checked + label {
+background: var(--accent);
+color: #fff;
+}
+
+/* CHECKBOX ROW */
+.check-row { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+.check-row input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--accent); }
+.check-row label { text-transform: none; letter-spacing: 0; font-size: 13px; font-family: var(--sans); color: var(--text); cursor: pointer; }
+
+/* SECTION DIVIDER */
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+/* RESULT PANEL */
+.result-panel {
+border-radius: var(--radius);
+padding: 28px 32px;
+border: 2px solid;
+margin-top: 8px;
+}
+.result-panel.ok { background: var(--ok-bg); border-color: var(--ok); }
+.result-panel.fail { background: var(--fail-bg); border-color: var(--fail); }
+.result-panel.pending { background: #f0ede8; border-color: var(--border); }
+.result-panel .verdict {
+font-size: 28px;
+font-weight: 700;
+font-family: var(--mono);
+letter-spacing: 2px;
+}
+.result-panel.ok .verdict { color: var(--ok); }
+.result-panel.fail .verdict { color: var(--fail); }
+.result-panel.pending .verdict { color: var(--text-soft); }
+.result-panel .result-row {
+display: flex;
+gap: 40px;
+margin-top: 16px;
+flex-wrap: wrap;
+}
+.result-panel .rr-item {}
+.result-panel .rr-label { font-family: var(--mono); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-soft); }
+.result-panel .rr-val { font-family: var(--mono); font-size: 24px; font-weight: 600; }
+.result-panel.ok .rr-val.calc { color: var(--ok); }
+.result-panel.fail .rr-val.calc { color: var(--fail); }
+
+/* BTN */
+.btn-calc {
+background: var(--accent);
+color: #fff;
+border: none;
+padding: 14px 36px;
+font-family: var(--mono);
+font-size: 13px;
+letter-spacing: 2px;
+text-transform: uppercase;
+cursor: pointer;
+border-radius: var(--radius);
+transition: background 0.15s;
+}
+.btn-calc:hover { background: #152c47; }
+.btn-print {
+background: #fff;
+color: var(--accent);
+border: 1px solid var(--accent);
+padding: 14px 28px;
+font-family: var(--mono);
+font-size: 12px;
+letter-spacing: 1.5px;
+text-transform: uppercase;
+cursor: pointer;
+border-radius: var(--radius);
+}
+.btn-print:hover { background: #e8eef5; }
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+
+/* FORMULA NOTE */
+.formula-note {
+background: #f0ede8;
+border-left: 3px solid var(--accent);
+padding: 10px 14px;
+font-family: var(--mono);
+font-size: 12px;
+color: var(--text-soft);
+margin-top: 10px;
+line-height: 1.7;
+}
+
+/* INFO TAG */
+.info-tag {
+display: inline-block;
+background: var(--accent);
+color: #fff;
+font-family: var(--mono);
+font-size: 10px;
+letter-spacing: 1px;
+padding: 2px 8px;
+border-radius: 10px;
+margin-left: 6px;
+vertical-align: middle;
+}
+
+/* REQUIRED RESISTANCE TABLE */
+.req-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.req-table th { background: var(--accent); color: #fff; padding: 8px 12px; font-family: var(--mono); font-size: 11px; letter-spacing: 1px; text-align: left; }
+.req-table td { border: 1px solid var(--border); padding: 7px 12px; }
+.req-table tr:nth-child(even) td { background: #f5f2ee; }
+.req-table .highlight td { background: #dce8f5 !important; font-weight: 600; }
+
+@media print {
+.site-header { background: #000 !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+.no-print { display: none !important; }
+body { background: #fff; }
+.card { break-inside: avoid; }
+}
+</style>
+
+</head>
+<body>
+
+<div class="site-header">
+  <div class="logo-mark">ČEZ Distribuce<br>EG.D / PREdistribuce</div>
+  <h1>Protokol o měření uzemnění — Výpočet zemního odporu</h1>
+  <div class="norm-badge">PNE 33 0000-4 ed.6</div>
+</div>
+
+<div class="app-body">
+
+  <div class="card">
+    <div class="card-header"><span class="section-num">1</span> Identifikace stavby a podmínky měření</div>
+    <div class="card-body">
+      <div class="grid2">
+        <div class="field"><label>Název stavby / lokality</label><input type="text" id="stavba" placeholder="např. TS Plzeň-Bory 2"></div>
+        <div class="field"><label>IV stavby / číslo zakázky</label><input type="text" id="iv" placeholder="IVS-2025-0001"></div>
+        <div class="field"><label>Datum měření</label><input type="date" id="datum"></div>
+        <div class="field"><label>Místo měření</label><input type="text" id="misto" placeholder="GPS / adresa / km vedení"></div>
+        <div class="field"><label>Měřící zařízení</label><input type="text" id="zarizeni" value="UT 572" readonly style="background:#f0ede8;color:#5a5248;"></div>
+        <div class="field"><label>Podmínky měření</label><textarea id="podminky" placeholder="Počasí, vlhkost půdy, teplota vzduchu, poznámky…"></textarea></div>
+      </div>
+    </div>
+  </div>
+
   <div class="card">
     <div class="card-header"><span class="section-num">2</span> Rezistivita půdy (4-vodičová metoda)</div>
     <div class="card-body">
       <div class="formula-note" style="margin-bottom:16px;">
-        Zadejte přímo naměřenou hodnotu rezistivity $\rho$ pro rozestup sond 1 m. 
+        Zadejte přímo naměřenou hodnotu rezistivity ρ pro rozestup sond 1 m. 
         Dle PNE 33 0000-4 ed.6 se pro tento rozestup uvažuje model homogenní půdy.
       </div>
 
       <div class="grid2">
         <div class="field">
-          <label>Naměřená rezistivita $\rho$ (1 m)</label>
+          <label>Naměřená rezistivita ρ (1 m)</label>
           <div style="display:flex; gap:10px; align-items:center;">
             <input type="number" id="manual_rho" min="0" step="0.1" placeholder="zadejte hodnotu">
             <span class="unit">Ωm</span>
@@ -22,7 +387,7 @@
       <div id="resis-result" style="margin-top:20px; display:none;">
         <div class="grid2">
           <div class="computed-box" style="background:#1e3a5f; color:#fff;">
-            <div class="cv-label" style="color:rgba(255,255,255,0.65);">$\rho_{vyp}$ — výpočtová rezistivita</div>
+            <div class="cv-label" style="color:rgba(255,255,255,0.65);">ρ<sub>vyp</sub> — výpočtová rezistivita</div>
             <div class="cv-value" id="out_rvyp" style="color:#ffd080; font-size:28px;">—</div>
             <div class="cv-unit" style="color:rgba(255,255,255,0.7);">Ωm</div>
           </div>
@@ -36,8 +401,211 @@
     </div>
   </div>
 
-<script>
-// Původní funkce calcResistivity nahrazena touto zjednodušenou verzí:
+  <div class="card">
+    <div class="card-header"><span class="section-num">3</span> Typ zařízení a požadavky na uzemnění</div>
+    <div class="card-body">
+      <div class="grid2">
+        <div class="field">
+          <label>Typ zařízení</label>
+          <select id="typ_zarizeni" onchange="updateRequirements()">
+            <option value="">— vyberte —</option>
+            <option value="TS">TS — Trafostanice vn/nn</option>
+            <option value="UO">ÚO — Úsekový odpínač</option>
+            <option value="PB_VN">PB VN — Podpěrný bod vedení VN</option>
+            <option value="PB_NN">PB NN — Podpěrný bod vedení NN</option>
+            <option value="PB_NN_KS">PB NN konec sítě — Podpěrný bod NN (konec sítě)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Maximální dovolené dotykové napětí U<sub>Tp</sub></label>
+          <div class="toggle-group" style="margin-top:4px;">
+            <input type="radio" name="utp" id="utp75" value="75" onchange="updateRequirements()">
+            <label for="utp75">75 V <span style="font-size:11px;opacity:.7">(kompenz. síť)</span></label>
+            <input type="radio" name="utp" id="utp150" value="150" onchange="updateRequirements()">
+            <label for="utp150">150 V</label>
+            <input type="radio" name="utp" id="utp290" value="290" onchange="updateRequirements()">
+            <label for="utp290">290 V <span style="font-size:11px;opacity:.7">(0,4 s)</span></label>
+            <input type="radio" name="utp" id="utpjine" value="jine" onchange="updateRequirements()">
+            <label for="utpjine">Jiné</label>
+          </div>
+          <input type="number" id="utp_jine_val" placeholder="Zadejte U_Tp (V)" style="margin-top:8px;display:none;" onchange="updateRequirements()">
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div id="requirements-panel" style="display:none;">
+        <table class="req-table" id="req-table">
+          <thead><tr><th>Typ zařízení</th><th>Požadovaný R<sub>max</sub> (Ω)</th><th>Poznámka</th></tr></thead>
+          <tbody id="req-tbody"></tbody>
+        </table>
+        <div class="formula-note" id="req-note" style="margin-top:10px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="section-num">4</span> Konfigurace zemniče</div>
+    <div class="card-body">
+
+      <div class="converter-box">
+        <h4>🔁 Převod obdélníkového zemniče na ekvivalentní kruhový (vzorec 3-7)</h4>
+        <div class="grid3">
+          <div class="field"><label>Strana a (m)</label><input type="number" id="rect_a" min="0" step="0.1" placeholder="délka"></div>
+          <div class="field"><label>Strana b (m)</label><input type="number" id="rect_b" min="0" step="0.1" placeholder="šířka"></div>
+          <div style="display:flex;align-items:flex-end;">
+            <button class="btn-calc no-print" onclick="convertRect()" style="padding:9px 20px;font-size:12px;">Přepočítat D</button>
+          </div>
+        </div>
+        <div class="converter-result" id="rect-result">— zadejte strany a klikněte Přepočítat D</div>
+        <div class="formula-note">D = √(4·a·b / π) &nbsp;|&nbsp; Výsledek D lze zadat do polí průměru kruhu níže.</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <p style="font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-soft);margin-bottom:12px;">Kruhové obvodové zemniče (FeZn 30×4 mm)</p>
+      <div class="grid3">
+        <div class="field">
+          <label>Průměr kruhu 1 — D₁ (m) <span class="info-tag">K1</span></label>
+          <input type="number" id="d1" min="0" step="0.1" placeholder="— m">
+          <div class="unit">hloubka uložení z₁:</div>
+          <input type="number" id="z1" min="0" step="0.1" placeholder="0.6" value="0.6">
+        </div>
+        <div class="field">
+          <label>Průměr kruhu 2 — D₂ (m) <span class="info-tag">K2</span></label>
+          <input type="number" id="d2" min="0" step="0.1" placeholder="— m (nepovinné)">
+          <div class="unit">hloubka uložení z₂:</div>
+          <input type="number" id="z2" min="0" step="0.1" placeholder="0.8" value="0.8">
+        </div>
+        <div class="field">
+          <label>Průměr kruhu 3 — D₃ (m) <span class="info-tag">K3</span></label>
+          <input type="number" id="d3" min="0" step="0.1" placeholder="— m (nepovinné)">
+          <div class="unit">hloubka uložení z₃:</div>
+          <input type="number" id="z3" min="0" step="0.1" placeholder="1.0" value="1.0">
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="check-row"><input type="checkbox" id="use_paprsek"> <label for="use_paprsek"><strong>Paprskový zemnič</strong> — přidat výběhový pásek(y)</label></div>
+      <div id="paprsek-block" style="display:none;margin-top:10px;">
+        <div class="grid3">
+          <div class="field"><label>Délka paprsku L<sub>p</sub> (m)</label><input type="number" id="Lp" min="0" step="0.5" placeholder="12.5"></div>
+          <div class="field"><label>Počet paprsků n<sub>p</sub></label>
+            <select id="np">
+              <option value="1">1 paprsek</option>
+              <option value="2">2 paprsky (180°)</option>
+              <option value="3">3 paprsky</option>
+              <option value="4">4 paprsky (90°)</option>
+            </select>
+          </div>
+          <div class="field"><label>Hloubka uložení z<sub>p</sub> (m)</label><input type="number" id="zp" min="0" step="0.1" value="0.6"></div>
+        </div>
+        <div class="formula-note">R<sub>pn</sub> = (R<sub>p</sub> / n) · (1 / η<sub>pn</sub>) &nbsp;|&nbsp; η: 1 paprsek=1,00 | 2=0,96 | 3=0,78 | 4=0,75 (Tab. 3.4)</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="check-row"><input type="checkbox" id="use_tyce"> <label for="use_tyce"><strong>Tyčové zemniče</strong></label></div>
+      <div id="tyce-block" style="display:none;margin-top:10px;">
+        <div class="grid3">
+          <div class="field"><label>Délka tyče L<sub>t</sub> (m)</label>
+            <select id="Lt">
+              <option value="1.5">1,5 m</option>
+              <option value="2.0">2,0 m</option>
+            </select>
+          </div>
+          <div class="field"><label>Počet tyčí n<sub>t</sub></label><input type="number" id="nt" min="1" max="24" step="1" value="4"></div>
+          <div class="field"><label>Průměr rozmístění (m)</label><input type="number" id="Rt_circle" min="0" step="0.1" placeholder="= D vnějšího kruhu"></div>
+        </div>
+        <div class="formula-note">Průměr d tyče T-profilu 30×30 mm = 30 mm. Koeficient η<sub>tn</sub> odečten z Graf P1 aproximací (viz norma kap. 3.4.2).</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card no-print">
+    <div class="card-header"><span class="section-num">5</span> Spuštění výpočtu</div>
+    <div class="card-body">
+      <div class="btn-row">
+        <button class="btn-calc" onclick="calculate()">⚡ VYPOČÍTAT ZEMNÍ ODPOR</button>
+        <button class="btn-print" onclick="window.print()">🖨 Tisk / PDF protokolu</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="results-card">
+    <div class="card-header"><span class="section-num">6</span> Výsledky výpočtu</div>
+    <div class="card-body">
+
+      <div id="calc-detail" style="display:none;margin-bottom:20px;">
+        <p style="font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-soft);margin-bottom:10px;">Dílčí odpory</p>
+        <div id="detail-grid" class="grid3"></div>
+      </div>
+
+      <div id="result-panel" class="result-panel pending">
+        <div class="verdict" id="verdict-text">— VÝPOČET NEZADÁN —</div>
+        <div class="result-row">
+          <div class="rr-item">
+            <div class="rr-label">R<sub>calc</sub> — Vypočtený celkový odpor</div>
+            <div class="rr-val calc" id="res-calc">—</div>
+            <div class="unit">Ω</div>
+          </div>
+          <div class="rr-item">
+            <div class="rr-label">R<sub>max</sub> — Požadovaný max. odpor</div>
+            <div class="rr-val" id="res-req">—</div>
+            <div class="unit">Ω</div>
+          </div>
+          <div class="rr-item">
+            <div class="rr-label">ρ<sub>vyp</sub> použitá</div>
+            <div class="rr-val" id="res-rho">—</div>
+            <div class="unit">Ωm</div>
+          </div>
+        </div>
+        <div id="res-steps" style="margin-top:16px;font-family:var(--mono);font-size:12px;color:var(--text-soft);line-height:2;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="section-num">REF</span> Referenční tabulka požadovaných odporů dle PNE 33 3301-1</div>
+    <div class="card-body">
+      <table class="req-table">
+        <thead><tr><th>Typ zařízení</th><th>R<sub>max</sub> (Ω)</th><th>Podmínky / poznámka</th></tr></thead>
+        <tbody>
+          <tr><td>TS — trafostanice vn/nn (kompenz. síť)</td><td style="font-family:var(--mono);font-weight:700;">15 Ω</td><td>U<sub>Tp</sub>=75 V, t&gt;5 s, I<sub>E</sub>≤75 A</td></tr>
+          <tr><td>TS — trafostanice vn/nn (odporové uzemnění)</td><td style="font-family:var(--mono);font-weight:700;">5 Ω</td><td>U<sub>Tp</sub>=290 V, t=0,4 s</td></tr>
+          <tr><td>ÚO — úsekový odpínač (kompenz. síť)</td><td style="font-family:var(--mono);font-weight:700;">15 Ω</td><td>Stejné jako TS</td></tr>
+          <tr><td>PB VN — podpěrný bod vedení VN</td><td style="font-family:var(--mono);font-weight:700;">10 Ω</td><td>Dle PNE 33 3301-1, kap. 3</td></tr>
+          <tr><td>PB NN — podpěrný bod vedení NN</td><td style="font-family:var(--mono);font-weight:700;">30 Ω</td><td>Dle ČSN 33 2000-5-54</td></tr>
+          <tr><td>PB NN konec sítě</td><td style="font-family:var(--mono);font-weight:700;">2 Ω</td><td>Zajištění odporu uzemnění vodičů PEN</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><script>
+// ====== CONSTANTS ======
+const D_STRIP = 0.015; // m (pásek 30x4 mm, d = 15 mm = šířka/2)
+const D_ROD   = 0.030; // m (tyč T 30x30, d = 30 mm)
+
+// ====== CHECKBOX TOGGLES ======
+document.getElementById('use_paprsek').addEventListener('change', function() {
+  document.getElementById('paprsek-block').style.display = this.checked ? 'block' : 'none';
+});
+document.getElementById('use_tyce').addEventListener('change', function() {
+  document.getElementById('tyce-block').style.display = this.checked ? 'block' : 'none';
+});
+document.getElementById('utpjine').addEventListener('change', function() {
+  if (this.checked) document.getElementById('utp_jine_val').style.display = 'block';
+});
+['utp75','utp150','utp290'].forEach(id => {
+  document.getElementById(id).addEventListener('change', function() {
+    document.getElementById('utp_jine_val').style.display = 'none';
+  });
+});
+
+// ====== RESISTIVITY CALCULATION (PŘÍMÉ ZADÁNÍ) ======
 function setResistivity() {
   const val = parseFloat(document.getElementById('manual_rho').value);
   
@@ -54,6 +622,269 @@ function setResistivity() {
   window._rvyp = val;
 }
 
-// Ostatní funkce (convertRect, updateRequirements, calculate atd.) zůstávají beze změny,
-// protože správně pracují s globální proměnnou window._rvyp.
+// ====== RECT CONVERTER ======
+function convertRect() {
+  const a = parseFloat(document.getElementById('rect_a').value);
+  const b = parseFloat(document.getElementById('rect_b').value);
+  if (isNaN(a)||isNaN(b)||a<=0||b<=0) { alert('Zadejte obě strany a > 0.'); return; }
+  const D = Math.sqrt(4*a*b / Math.PI);
+  document.getElementById('rect-result').innerHTML =
+    `D = √(4 × ${a} × ${b} / π) = <strong>${D.toFixed(3)} m</strong> &nbsp;|&nbsp; Plocha S = ${(a*b).toFixed(2)} m²`;
+}
+
+// ====== REQUIREMENTS ======
+const REQ = {
+  'TS':        { label: 'Trafostanice vn/nn',        note: 'PNE 33 3301-1 kap. 3, ČSN EN 50522' },
+  'UO':        { label: 'Úsekový odpínač',           note: 'Stejné požadavky jako TS' },
+  'PB_VN':     { label: 'Podpěrný bod vedení VN',    note: 'PNE 33 3301-1 kap. 3' },
+  'PB_NN':     { label: 'Podpěrný bod vedení NN',    note: 'ČSN 33 2000-5-54' },
+  'PB_NN_KS':  { label: 'PB NN — konec sítě',        note: 'Zajistit R ≤ 2 Ω pro PEN' },
+};
+
+function getUtp() {
+  const sel = document.querySelector('input[name=utp]:checked');
+  if (!sel) return null;
+  if (sel.value === 'jine') {
+    const v = parseFloat(document.getElementById('utp_jine_val').value);
+    return isNaN(v) ? null : v;
+  }
+  return parseFloat(sel.value);
+}
+
+function getRequiredR(typ, utp) {
+  if (!typ || !utp) return null;
+  if (typ === 'PB_NN_KS') return 2;
+  if (typ === 'PB_NN') return 30;
+  if (typ === 'PB_VN') return 10;
+  if (utp <= 75) return 15;
+  if (utp <= 150) return 10;
+  if (utp <= 290) return 5;
+  return Math.round(2 * utp / 75);
+}
+
+function updateRequirements() {
+  const typ = document.getElementById('typ_zarizeni').value;
+  const utp = getUtp();
+  const Rmax = getRequiredR(typ, utp);
+  window._Rmax = Rmax;
+  window._typ = typ;
+
+  const panel = document.getElementById('requirements-panel');
+  if (!typ || utp === null) { panel.style.display='none'; return; }
+  panel.style.display = 'block';
+
+  const info = REQ[typ] || { label: typ, note: '' };
+  const tbody = document.getElementById('req-tbody');
+  tbody.innerHTML = `<tr class="highlight"><td>${info.label}</td><td style="font-family:var(--mono);font-size:20px;color:var(--accent);">${Rmax !== null ? Rmax + ' Ω' : '—'}</td><td>${info.note}</td></tr>`;
+  document.getElementById('req-note').textContent =
+    `U_Tp = ${utp} V | R_max = 2·U_Tp / I_E nebo dle PNE 33 3301-1. Zdroj: PNE 33 0000-4 ed.6 kap. 4.3–4.5.`;
+}
+
+// ====== ELECTRODE FORMULAS ======
+function R_krug(rho, D, z, d) {
+  if (!D || D <= 0 || !z || z <= 0) return null;
+  return (rho / (2 * Math.PI * D)) * (Math.log(8*D/d) + Math.log(Math.PI*D/(2*z)));
+}
+
+function R_paprsek(rho, L, z, d) {
+  if (!L || L <= 0 || !z || z <= 0) return null;
+  return (rho / (2 * Math.PI * L)) * (Math.log(2*L/d) + Math.log(L/(2*z)));
+}
+
+function R_tyce(rho, L, d) {
+  if (!L || L <= 0) return null;
+  return (rho / (2 * Math.PI * L)) * Math.log(4*L/d);
+}
+
+function eta_rod(n, aL) {
+  const curves = {
+    3:   [0.95, 0.92, 0.87, 0.82, 0.78, 0.75, 0.72, 0.70],
+    2:   [0.93, 0.88, 0.83, 0.78, 0.73, 0.70, 0.67, 0.65],
+    1:   [0.88, 0.80, 0.73, 0.67, 0.62, 0.58, 0.55, 0.53],
+    0.5: [0.78, 0.68, 0.62, 0.57, 0.53, 0.50, 0.50, 0.50],
+    0.25:[0.70, 0.60, 0.55, 0.52, 0.51, 0.51, 0.51, 0.51],
+  };
+  const nSteps = [4, 6, 8, 10, 12, 16, 20, 24];
+  const keys = [3, 2, 1, 0.5, 0.25];
+  let bestKey = keys[0];
+  keys.forEach(k => { if (Math.abs(k - aL) < Math.abs(bestKey - aL)) bestKey = k; });
+  const curve = curves[bestKey];
+  if (n <= nSteps[0]) return curve[0];
+  if (n >= nSteps[nSteps.length-1]) return curve[curve.length-1];
+  for (let i=0; i<nSteps.length-1; i++) {
+    if (n >= nSteps[i] && n <= nSteps[i+1]) {
+      const t = (n - nSteps[i]) / (nSteps[i+1] - nSteps[i]);
+      return curve[i] + t * (curve[i+1] - curve[i]);
+    }
+  }
+  return 0.65;
+}
+
+function R_parallel_eta(R1, R2, eta) {
+  return (R1 * R2) / (R1 + R2) / eta;
+}
+
+// ====== MAIN CALCULATION ======
+function calculate() {
+  const rho = window._rvyp;
+  if (!rho || isNaN(rho)) {
+    alert('Nejprve zadejte a potvrďte rezistivitu půdy v sekci 2.');
+    return;
+  }
+  const Rmax = window._Rmax;
+
+  const get = id => { const v = parseFloat(document.getElementById(id).value); return isNaN(v)||v<=0?null:v; };
+
+  let steps = [];
+  let components = [];
+
+  // ----- CIRCULAR ELECTRODES -----
+  const D1 = get('d1'), z1 = get('z1') || 0.6;
+  const D2 = get('d2'), z2 = get('z2') || 0.8;
+  const D3 = get('d3'), z3 = get('z3') || 1.0;
+
+  let R_circles = null;
+  let circleLabel = '';
+
+  if (D1 && D1 > 0) {
+    const Rk1 = R_krug(rho, D1, z1, D_STRIP);
+    steps.push(`R_K1: ρ/(2π·D₁)·[ln(8D₁/d)+ln(πD₁/2z₁)] = ${rho.toFixed(1)}/(2π·${D1})·[...] = ${Rk1.toFixed(3)} Ω`);
+    circleLabel = `K1 (D=${D1}m)`;
+    R_circles = Rk1;
+
+    if (D2 && D2 > 0) {
+      const Rk2 = R_krug(rho, D2, z2, D_STRIP);
+      steps.push(`R_K2 (D=${D2}m, z=${z2}m) = ${Rk2.toFixed(3)} Ω`);
+      const eta_oo = 0.77;
+      R_circles = R_parallel_eta(Rk1, Rk2, eta_oo);
+      circleLabel = `K1+K2 (η_OO=0,77)`;
+      steps.push(`R_KK = R_K1‖R_K2 / η_OO = ${Rk1.toFixed(3)}‖${Rk2.toFixed(3)} / 0,77 = ${R_circles.toFixed(3)} Ω`);
+
+      if (D3 && D3 > 0) {
+        const Rk3 = R_krug(rho, D3, z3, D_STRIP);
+        steps.push(`R_K3 (D=${D3}m, z=${z3}m) = ${Rk3.toFixed(3)} Ω`);
+        const eta_kkk = 0.68;
+        R_circles = R_parallel_eta(R_circles, Rk3, eta_kkk);
+        circleLabel = `K1+K2+K3 (η_KKK=0,68)`;
+        steps.push(`R_KKK = R_KK‖R_K3 / η_KKK = ... / 0,68 = ${R_circles.toFixed(3)} Ω`);
+      }
+    }
+    components.push({ label: circleLabel, R: R_circles });
+  }
+
+  // ----- PAPRSKY -----
+  let R_paps = null;
+  if (document.getElementById('use_paprsek').checked) {
+    const Lp = get('Lp'), np = parseInt(document.getElementById('np').value), zp = get('zp') || 0.6;
+    if (Lp && Lp > 0) {
+      const Rp1 = R_paprsek(rho, Lp, zp, D_STRIP);
+      const eta_pn = [1, 0.96, 0.78, 0.75][np-1] || 0.75;
+      R_paps = (Rp1 / np) / eta_pn;
+      steps.push(`R_paprsek1 (L=${Lp}m) = ${Rp1.toFixed(3)} Ω | n=${np}, η=${eta_pn} → R_pn = ${R_paps.toFixed(3)} Ω`);
+      components.push({ label: `Paprsky (n=${np}, L=${Lp}m)`, R: R_paps });
+    }
+  }
+
+  // ----- TYČE -----
+  let R_rods_comb = null;
+  if (document.getElementById('use_tyce').checked) {
+    const Lt = parseFloat(document.getElementById('Lt').value);
+    const nt = parseInt(document.getElementById('nt').value) || 4;
+    const Rt_circ = get('Rt_circle');
+    const Rt1 = R_tyce(rho, Lt, D_ROD);
+    steps.push(`R_tyč1 (L=${Lt}m) = ρ/(2πL)·ln(4L/d) = ${Rt1.toFixed(3)} Ω`);
+
+    let eta_tn = 0.7;
+    if (Rt_circ && Rt_circ > 0) {
+      const phi = (2 * Math.PI) / nt;
+      const a = Rt_circ * Math.sqrt(2 - 2 * Math.cos(phi));
+      const aL = a / Lt;
+      eta_tn = eta_rod(nt, aL);
+      steps.push(`vzdálenost tyčí a=${a.toFixed(2)}m, a/L=${aL.toFixed(2)}, η_tn≈${eta_tn.toFixed(3)} (aproximace Graf P1)`);
+    } else {
+      steps.push(`Průměr rozmístění nezadán → η_tn=${eta_tn} (výchozí dle Tab. 3.7)`);
+    }
+    R_rods_comb = (Rt1 / nt) / eta_tn;
+    steps.push(`R_t${nt} = R_t / n / η_tn = ${Rt1.toFixed(3)} / ${nt} / ${eta_tn.toFixed(3)} = ${R_rods_comb.toFixed(3)} Ω`);
+    components.push({ label: `Tyče (n=${nt}, L=${Lt}m)`, R: R_rods_comb });
+  }
+
+  // ----- COMBINE ALL -----
+  let R_total = null;
+  let combLabel = '';
+
+  if (components.length === 0) {
+    alert('Zadejte alespoň jeden kruh (D₁) nebo jiný typ zemniče.');
+    return;
+  }
+
+  if (components.length === 1) {
+    R_total = components[0].R;
+    combLabel = components[0].label;
+  } else if (components.length === 2) {
+    const A = components[0], B = components[1];
+    let eta_comb;
+    if (B.label.startsWith('Paprsky')) {
+      const np = parseInt(document.getElementById('np').value);
+      eta_comb = np === 1 ? 0.85 : 0.78;
+      steps.push(`Kombinace (obv. + pásky): η_OP=${eta_comb}`);
+    } else {
+      eta_comb = 0.66;
+      const nt = parseInt(document.getElementById('nt').value) || 4;
+      eta_comb = nt <= 4 ? 0.74 : 0.66;
+      steps.push(`Kombinace (obv. + tyče): η_OT=${eta_comb}`);
+    }
+    R_total = R_parallel_eta(A.R, B.R, eta_comb);
+    combLabel = `${A.label} + ${B.label}`;
+    steps.push(`R_celk = R_A‖R_B / η = ${A.R.toFixed(3)}‖${B.R.toFixed(3)} / ${eta_comb} = ${R_total.toFixed(3)} Ω`);
+  } else {
+    const circ = components[0], pap = components[1], rod = components[2];
+    const np = parseInt(document.getElementById('np').value);
+    const eta_op = np === 1 ? 0.85 : 0.78;
+    const R_cp = R_parallel_eta(circ.R, pap.R, eta_op);
+    steps.push(`R_kruh+pásky = ${circ.R.toFixed(3)}‖${pap.R.toFixed(3)} / ${eta_op} = ${R_cp.toFixed(3)} Ω`);
+    const nt = parseInt(document.getElementById('nt').value) || 4;
+    const eta_ot = nt <= 4 ? 0.74 : 0.66;
+    R_total = R_parallel_eta(R_cp, rod.R, eta_ot);
+    combLabel = `${circ.label} + ${pap.label} + ${rod.label}`;
+    steps.push(`R_celk = R_cp‖R_tyče / ${eta_ot} = ${R_cp.toFixed(3)}‖${rod.R.toFixed(3)} / ${eta_ot} = ${R_total.toFixed(3)} Ω`);
+  }
+
+  // ----- RENDER DETAIL -----
+  const detGrid = document.getElementById('detail-grid');
+  detGrid.innerHTML = '';
+  components.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'computed-box';
+    div.innerHTML = `<div class="cv-label">${c.label}</div><div class="cv-value">${c.R.toFixed(3)}</div><div class="cv-unit">Ω</div>`;
+    detGrid.appendChild(div);
+  });
+  document.getElementById('calc-detail').style.display = 'block';
+
+  // ----- VERDICT -----
+  const panel = document.getElementById('result-panel');
+  panel.className = 'result-panel';
+  document.getElementById('res-calc').textContent = R_total.toFixed(3) + ' Ω';
+  document.getElementById('res-rho').textContent = rho.toFixed(1);
+
+  if (Rmax !== null && !isNaN(Rmax)) {
+    document.getElementById('res-req').textContent = Rmax + ' Ω';
+    if (R_total <= Rmax) {
+      panel.classList.add('ok');
+      document.getElementById('verdict-text').textContent = '✔ VYHOVUJE';
+    } else {
+      panel.classList.add('fail');
+      document.getElementById('verdict-text').textContent = '✘ NEVYHOVUJE';
+    }
+  } else {
+    panel.classList.add('pending');
+    document.getElementById('res-req').textContent = '— (nevybráno)';
+    document.getElementById('verdict-text').textContent = '⚠ VYBERTE TYP ZAŘÍZENÍ';
+  }
+
+  document.getElementById('res-steps').innerHTML = '<strong>Postup výpočtu:</strong><br>' + steps.join('<br>');
+}
 </script>
+
+</body>
+</html>
