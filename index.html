@@ -343,84 +343,86 @@
 
   .print-only { display: none; }
 
-  /* ====== OFICIÁLNÍ TISKOVÝ STYL - EXTRÉMNÍ OPTIMALIZACE NA 1 STRANU A4 ====== */
+  /* ====== OFICIÁLNÍ TISKOVÝ STYL - EXTRÉMNÍ OPTIMALIZACE NA 1x A4 ====== */
   @media print {
-    @page { size: A4 portrait; margin: 5mm 10mm; } /* Minimální okraje pro maximální plochu */
+    @page { size: A4 portrait; margin: 4mm 6mm; } /* Minimální možné okraje tiskárny */
     
-    body { background: #fff; color: #000; font-size: 9px; line-height: 1.1; }
+    body { background: #fff; color: #000; font-size: 8.5px; line-height: 1.05; }
     .no-print, .formula-note, .converter-box, .info-tag, .btn-row, p { display: none !important; }
     .print-only { display: flex !important; }
     .app-body { padding: 0; max-width: 100%; margin: 0; }
     
-    /* Hlavička - ultra těsná */
+    /* Hlavička - mini */
     .site-header { 
       background: transparent !important; color: #000 !important; 
       padding: 0 0 2px 0; border-bottom: 1px solid #000; 
-      align-items: center; margin-bottom: 4px;
+      align-items: center; margin-bottom: 2px;
     }
-    .site-header .logo-mark { color: #000; font-weight: bold; font-size: 7px; line-height: 1; }
-    .site-header h1 { color: #000; font-size: 14px; margin: 0; }
-    .site-header .norm-badge { border: 1px solid #000; color: #000; background: transparent; padding: 1px 4px; font-size: 8px; }
-    .header-logos img { padding: 0; height: 22px; }
+    .site-header .logo-mark { color: #000; font-weight: bold; font-size: 6px; line-height: 1; }
+    .site-header h1 { color: #000; font-size: 13px; margin: 0; }
+    .site-header .norm-badge { border: 1px solid #000; color: #000; background: transparent; padding: 1px 3px; font-size: 7px; }
+    .header-logos img { padding: 0; height: 18px; }
 
-    /* Karty (Sekce) - zrušení všech mezer */
-    .card { border: none !important; border-radius: 0; margin-bottom: 4px; page-break-inside: avoid; }
+    /* Karty (Sekce) */
+    .card { border: none !important; border-radius: 0; margin-bottom: 2px; page-break-inside: avoid; }
     .card-header { 
       background: transparent !important; color: #000 !important; 
-      border-bottom: 1px solid #000; padding: 1px 0; margin-bottom: 3px; font-size: 9px; font-weight: bold;
+      border-bottom: 1px solid #000; padding: 1px 0; margin-bottom: 2px; font-size: 8px; font-weight: bold;
     }
-    .card-header .section-num { background: #000; color: #fff; width: 12px; height: 12px; font-size: 7px; margin-right: 4px; }
+    .card-header .section-num { background: #000; color: #fff; width: 10px; height: 10px; font-size: 6px; margin-right: 3px; }
     .card-body { padding: 0; }
 
-    /* Mřížky - minimální mezery */
-    .grid2, .grid3, .grid4 { gap: 4px; margin-bottom: 2px; }
+    /* Mřížky - Zásadní úspora místa (Sekce 1 na 3 sloupce) */
+    .grid2, .grid3, .grid4 { gap: 2px; margin-bottom: 1px; }
+    .card:nth-of-type(1) .grid2 { grid-template-columns: 1fr 1fr 1fr !important; } /* Identifikace do 3 sloupců */
+    .card:nth-of-type(1) .field[style*="grid-column"] { grid-column: auto !important; } /* Zrušení roztahování poznámek */
 
-    /* Vstupní pole - jako čistý text na lince */
-    .field { border-bottom: 1px dotted #ccc; padding-bottom: 1px; }
-    label { font-size: 8px; color: #555 !important; margin: 0; letter-spacing: 0; }
+    /* Vstupní pole - jako čistý text */
+    .field { border-bottom: 1px dotted #ccc; padding-bottom: 0; }
+    label { font-size: 7px; color: #444 !important; margin: 0; letter-spacing: 0; }
     input[type=text], input[type=number], input[type=date], select, textarea {
       border: none !important; background: transparent !important; padding: 0 !important;
-      font-weight: bold; color: #000 !important; font-size: 10px; height: auto;
+      font-weight: bold; color: #000 !important; font-size: 9px; height: auto;
       appearance: none; -webkit-appearance: none; box-shadow: none !important;
     }
-    textarea { min-height: 12px; height: auto; overflow: hidden; border-bottom: none !important; }
-    .unit { font-size: 8px; display: inline-block; margin-left: 2px; }
+    textarea { min-height: 10px; height: auto; overflow: hidden; border-bottom: none !important; }
+    .unit { font-size: 7px; display: inline-block; margin-left: 2px; }
 
-    /* Rádia / Checkboxy - úsporné */
+    /* Rádia / Checkboxy */
     .toggle-group { border: none !important; margin: 0; display: inline-block; }
     .toggle-group label { display: none !important; }
-    .toggle-group input[type=radio]:checked + label { display: inline-block !important; border: none !important; background: transparent !important; color: #000 !important; font-weight: bold; padding: 0; font-size: 10px; }
+    .toggle-group input[type=radio]:checked + label { display: inline-block !important; border: none !important; background: transparent !important; color: #000 !important; font-weight: bold; padding: 0; font-size: 9px; }
     .check-row { margin: 1px 0; }
-    .check-row label { font-weight: bold; font-size: 9px; }
+    .check-row label { font-weight: bold; font-size: 8px; }
 
-    .divider { margin: 3px 0; background: transparent; height: 1px; border-top: 1px dashed #eee; }
+    .divider { margin: 2px 0; background: transparent; height: 1px; border-top: 1px dashed #eee; }
 
-    /* Dílčí odpory (Computed Boxy) */
-    .computed-box { background: transparent !important; border: 1px solid #aaa !important; padding: 2px 4px; border-radius: 0; }
-    .computed-box .cv-label { font-size: 7px; color: #555 !important; }
-    .computed-box .cv-value { color: #000 !important; font-size: 12px; margin: 0; }
-    .computed-box .cv-model { font-size: 7px; color: #555 !important; margin: 0; }
+    /* Dílčí odpory */
+    .computed-box { background: transparent !important; border: 1px solid #aaa !important; padding: 1px 2px; border-radius: 0; }
+    .computed-box .cv-label { font-size: 6px; color: #444 !important; }
+    .computed-box .cv-value { color: #000 !important; font-size: 11px; margin: 0; }
+    .computed-box .cv-model { font-size: 6px; color: #444 !important; margin: 0; }
 
     /* Výsledný panel */
-    .result-panel { background: transparent !important; border: 1px solid #000 !important; padding: 4px 8px; margin-top: 2px; border-radius: 0; }
-    .result-panel .verdict { font-size: 14px; margin-bottom: 2px; color: #000 !important; }
-    .result-panel .result-row { margin-top: 2px; gap: 15px; }
-    .result-panel .rr-label { color: #555 !important; font-size: 7px; }
-    .result-panel .rr-val { font-size: 14px; color: #000 !important; line-height: 1; }
+    .result-panel { background: transparent !important; border: 1px solid #000 !important; padding: 2px 4px; margin-top: 1px; border-radius: 0; }
+    .result-panel .verdict { font-size: 12px; margin-bottom: 1px; color: #000 !important; }
+    .result-panel .result-row { margin-top: 1px; gap: 10px; }
+    .result-panel .rr-label { color: #444 !important; font-size: 6px; }
+    .result-panel .rr-val { font-size: 12px; color: #000 !important; line-height: 1; }
 
-    /* POSTUP VÝPOČTU - DVOUSLOUPCOVÝ (Šetří polovinu vertikálního místa) */
+    /* POSTUP VÝPOČTU - DVOUSLOUPCOVÝ (Největší úspora výšky) */
     #res-steps { 
-      font-size: 8px !important; line-height: 1.1 !important; color: #333 !important; 
-      margin-top: 4px !important; border-top: 1px dotted #ccc; padding-top: 3px; 
-      column-count: 2; column-gap: 15px; 
+      font-size: 7.5px !important; line-height: 1.05 !important; color: #222 !important; 
+      margin-top: 2px !important; border-top: 1px dotted #ccc; padding-top: 2px; 
+      column-count: 2; column-gap: 10px; 
     }
 
     /* Tabulka požadavků */
-    .req-table th, .req-table td { padding: 2px 4px; font-size: 8px; border-color: #999; color: #000 !important; }
+    .req-table th, .req-table td { padding: 1px 2px; font-size: 7px; border-color: #999; color: #000 !important; }
 
-    /* Podpisový blok - těsně u konce */
-    .signature-block { display: flex; justify-content: space-between; margin-top: 8px; page-break-inside: avoid; }
-    .signature-box { width: 40%; text-align: center; border-top: 1px solid #000; padding-top: 2px; font-family: var(--sans); font-size: 9px; color: #000; }
+    /* Podpisový blok */
+    .signature-block { display: flex; justify-content: space-between; margin-top: 4px; page-break-inside: avoid; }
+    .signature-box { width: 40%; text-align: center; border-top: 1px solid #000; padding-top: 1px; font-family: var(--sans); font-size: 8px; color: #000; }
   }
 </style>
 
