@@ -461,6 +461,10 @@
 
 <div class="app-body">
 
+  <div class="btn-row no-print" style="justify-content: flex-end; margin-bottom: 20px;">
+    <button class="btn-print" onclick="resetTemplate()" style="color: #c0392b; border-color: #c0392b; background: transparent; padding: 8px 16px;">↻ RESETOVAT ŠABLONU</button>
+  </div>
+
   <div class="card">
     <div class="card-header"><span class="section-num">1</span> Identifikace stavby a podmínky měření</div>
     <div class="card-body">
@@ -708,10 +712,58 @@
     <div class="signature-box">Zástupce provozovatele (Podpis)</div>
   </div>
 
-</div><script>
+</div>
+
+<script>
 // ====== CONSTANTS ======
 const D_STRIP = 0.015; // m (pásek 30x4 mm, d = 15 mm = šířka/2)
 const D_ROD   = 0.030; // m (tyč T 30x30, d = 30 mm)
+
+// ====== RESET FUNCTION ======
+function resetTemplate() {
+  if (!confirm("Opravdu chcete vymazat všechna data a resetovat šablonu?")) return;
+  
+  // Clear inputs
+  document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], textarea').forEach(el => el.value = '');
+  document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+  
+  // Uncheck checkboxes and radios
+  document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => el.checked = false);
+  
+  // Set default values back
+  document.getElementById('zarizeni').value = 'UT 572';
+  document.getElementById('z1').value = '0.6';
+  document.getElementById('z2').value = '0.8';
+  document.getElementById('z3').value = '1.0';
+  document.getElementById('zp').value = '0.6';
+  document.getElementById('nt').value = '4';
+
+  // Reset global vars
+  window._rvyp = null;
+  window._Rmax = null;
+  window._typ = null;
+
+  // Hide conditional UI
+  document.getElementById('paprsek-block').style.display = 'none';
+  document.getElementById('tyce-block').style.display = 'none';
+  document.getElementById('utp_jine_val').style.display = 'none';
+  document.getElementById('resis-result').style.display = 'none';
+  document.getElementById('requirements-panel').style.display = 'none';
+  document.getElementById('calc-detail').style.display = 'none';
+
+  // Reset result panel
+  const panel = document.getElementById('result-panel');
+  panel.className = 'result-panel pending';
+  document.getElementById('verdict-text').textContent = '— VÝPOČET NEZADÁN —';
+  document.getElementById('res-calc').textContent = '—';
+  document.getElementById('res-req').textContent = '—';
+  document.getElementById('res-rho').textContent = '—';
+  document.getElementById('res-steps').innerHTML = '';
+  document.getElementById('rect-result').innerHTML = '— zadejte strany a klikněte Přepočítat D';
+  
+  // Clear URL (remove ?data=...)
+  window.history.replaceState({}, document.title, window.location.pathname);
+}
 
 // ====== CHECKBOX TOGGLES ======
 document.getElementById('use_paprsek').addEventListener('change', function() {
